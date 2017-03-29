@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+    <!-- 
+        © Material Theme
+        https://github.com/viosey/hexo-theme-material
+        Version: 1.3.0 -->
+
+    <!-- Title -->
+    
+    <title>
+        
+            监听Android APP网络请求的一种方法 | 
+        
+        Carmen&#39;s Blog
+    </title>
+
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+
+    <!-- Meta & Info -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="Carmen">
+    <meta name="description" content="null">
+    <meta name="keywords" content="null">
+
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Carmen&#39;s Blog">
+
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://blog.electronlowtea.tech">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="监听Android APP网络请求的一种方法 | Carmen&#39;s Blog">
+    <meta property="og:description" content="null">
+    
+
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="/css/material.min.css">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+  body, html {
+    font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  a {
+    color: #00838F;
+  }
+
+  .mdl-card__media,
+  #search-label,
+  #search-form-label:after,
+  #scheme-Paradox .hot_tags-count,
+  #scheme-Paradox .sidebar_archives-count,
+  #scheme-Paradox .sidebar-colored .sidebar-header,
+  #scheme-Paradox .sidebar-colored .sidebar-badge{
+    background-color: #0097A7 !important;
+  }
+
+  /* Sidebar User Drop Down Menu Text Color */
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+  #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus {
+    color: #0097A7 !important;
+  }
+
+  #post_entry-right-info,
+  .sidebar-colored .sidebar-nav li:hover > a,
+  .sidebar-colored .sidebar-nav li:hover > a i,
+  .sidebar-colored .sidebar-nav li > a:hover,
+  .sidebar-colored .sidebar-nav li > a:hover i,
+  .sidebar-colored .sidebar-nav li > a:focus i,
+  .sidebar-colored .sidebar-nav > .open > a,
+  .sidebar-colored .sidebar-nav > .open > a:hover,
+  .sidebar-colored .sidebar-nav > .open > a:focus,
+  #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a {
+    color: #0097A7 !important;
+  }
+
+  .toTop {
+    background: #757575 !important;
+  }
+
+  .material-layout .material-post>.material-nav,
+  .material-layout .material-index>.material-nav,
+  .material-nav a {
+    color: #757575;
+  }
+
+  #scheme-Paradox .MD-burger-layer {
+    background-color: #757575;
+  }
+
+  #scheme-Paradox #post-toc-trigger-btn {
+    color: #757575;
+  }
+
+  .post-toc a:hover {
+    color: #00838F;
+    text-decoration: underline;
+  }
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+      body{
+        background-color: #F5F5F5;
+      }
+
+      /* blog_info bottom background */
+      #scheme-Paradox .material-layout .something-else .mdl-card__supporting-text{
+        background-color: #fff;
+      }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+      .fade {
+        transition: all 800ms linear;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        -ms-transform: translate3d(0,0,0);
+        -o-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+        opacity: 1;
+      }
+
+      .fade.out{
+        opacity: 0;
+      }
+    </style>
+
+
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/queue.js"></script>
+
+    <!-- UC Browser Compatible -->
+    <script>
+        var agent = navigator.userAgent.toLowerCase();
+        if(agent.indexOf('ucbrowser')>0) {
+            document.write("<link rel=\"stylesheet\" href=\"/css/uc.css\">");
+            alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+        }
+    </script>
+
+    
+
+    
+
+    <!-- Bing Background -->
+    
+
+    <!-- Custom Head -->
+    
+</head>
+
+
+    
+        <body id="scheme-Paradox" class="lazy">
+            <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+                
+
+                <!-- Main Container -->
+                <main class="material-layout__content" id="main">
+
+                    <!-- Top Anchor -->
+                    <div id="top"></div>
+
+                    
+                        <!-- Hamburger Button -->
+                        <button class="MD-burger-icon sidebar-toggle">
+                            <span class="MD-burger-layer"></span>
+                        </button>
+                    
+
+                    <!-- Post TOC -->
+
+    
+    <!-- Back Button -->
+    <!--
+    <div class="material-back" id="backhome-div" tabindex="0">
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
+           href="#" onclick="window.history.back();return false;"
+           target="_self"
+           role="button"
+           data-upgraded=",MaterialButton,MaterialRipple">
+            <i class="material-icons" role="presentation">arrow_back</i>
+            <span class="mdl-button__ripple-container">
+                <span class="mdl-ripple"></span>
+            </span>
+        </a>
+    </div>
+    -->
+
+    <!-- Left aligned menu below button -->
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#需求"><span class="post-toc-number">1.</span> <span class="post-toc-text">需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#可以实现监听网络请求的技术方案"><span class="post-toc-number">2.</span> <span class="post-toc-text">可以实现监听网络请求的技术方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-实现整个http网络框架，让用户去调用。"><span class="post-toc-number">2.0.0.1.</span> <span class="post-toc-text">1. 实现整个http网络框架，让用户去调用。</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-Android热修复方案"><span class="post-toc-number">2.0.0.2.</span> <span class="post-toc-text">2. Android热修复方案</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-Java-AOP编程技术"><span class="post-toc-number">2.0.0.3.</span> <span class="post-toc-text">3. Java AOP编程技术</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#现有Java-AOP技术"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">现有Java AOP技术</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Android-Aspectj插件"><span class="post-toc-number">3.</span> <span class="post-toc-text">Android Aspectj插件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#接入步骤如下所示："><span class="post-toc-number">3.0.0.1.</span> <span class="post-toc-text">接入步骤如下所示：</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#API-Hook语法介绍"><span class="post-toc-number">4.</span> <span class="post-toc-text">API Hook语法介绍</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何实现对网络请求API的监听"><span class="post-toc-number">5.</span> <span class="post-toc-text">如何实现对网络请求API的监听</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#监听URLConnection"><span class="post-toc-number">5.0.1.</span> <span class="post-toc-text">监听URLConnection:</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#监听OkHttp"><span class="post-toc-number">5.0.2.</span> <span class="post-toc-text">监听OkHttp:</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#监听WebView"><span class="post-toc-number">5.0.3.</span> <span class="post-toc-text">监听WebView</span></a></li></ol></li></ol></li></ol>
+
+        <!--
+        <li class="mdl-menu__item">
+            Some Action
+        </li>
+        -->
+    </ul>
+
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+    <!-- Paradox Post Header -->
+    
+        
+            <!-- Random Thumbnail -->
+            <div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+            <script>
+    var randomNum = Math.floor(Math.random() * 19 + 1);
+
+    $('.post_thumbnail-random').css('background-image', 'url(' + '/img/random/material-' + randomNum + '.png' + ')');
+</script>
+
+        
+    
+            <p class="article-headline-p">
+                监听Android APP网络请求的一种方法
+            </p>
+        </div>
+
+
+
+
+
+                
+                    <!-- Paradox Post Info -->
+                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>Carmen</strong>
+        <span>3月 26, 2017</span>
+    </div>
+
+    <div class="section-spacer"></div>
+
+    <!-- Favorite -->
+    <!--
+        <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+            <i class="material-icons" role="presentation">favorite</i>
+            <span class="visuallyhidden">favorites</span>
+        </button>
+    -->
+
+    <!-- Qrcode -->
+    
+
+    <!-- Tags (bookmark) -->
+    
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+
+    
+
+    <!-- Share Weibo -->
+    
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=监听Android APP网络请求的一种方法&url=http://blog.electronlowtea.tech//2017/03/26/监听Android-APP网络请求的一种方法/index.html&pic=&searchPic=false&style=simple" target="_blank">
+            <li class="mdl-menu__item">
+                分享到微博
+            </li>
+        </a>
+    
+
+    <!-- Share Twitter -->
+    
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=监听Android APP网络请求的一种方法&url=http://blog.electronlowtea.tech//2017/03/26/监听Android-APP网络请求的一种方法/index.html&via=Carmen" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Twitter
+            </li>
+        </a>
+    
+
+    <!-- Share Facebook -->
+    
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.electronlowtea.tech//2017/03/26/监听Android-APP网络请求的一种方法/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Facebook
+            </li>
+        </a>
+    
+
+    <!-- Share Google+ -->
+    
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://blog.electronlowtea.tech//2017/03/26/监听Android-APP网络请求的一种方法/index.html" target="_blank">
+            <li class="mdl-menu__item">
+                分享到 Google+
+            </li>
+        </a>
+    
+
+    <!-- Share LinkedIn -->
+    
+
+    <!-- Share QQ -->
+    
+
+    <!-- Share Telegram -->
+    
+</ul>
+
+</div>
+
+                
+
+                <!-- Post Content -->
+                <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+    
+        <p>目前市面上有很多APM厂商，用户只用集成Android SDK，写一行启动代码就可以轻松实现对APP网络请求的监听，非常神奇。本文就介绍一种可以实现该功能的技术，实现对APP网络请求的全量监听。</p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ol>
+<li>SDK集成后能实现对APP网络请求的监听。</li>
+<li>接入无成本，只需要少量的启动代码，不需要修改已有的代码。</li>
+</ol>
+<h2 id="可以实现监听网络请求的技术方案"><a href="#可以实现监听网络请求的技术方案" class="headerlink" title="可以实现监听网络请求的技术方案"></a>可以实现监听网络请求的技术方案</h2><h5 id="1-实现整个http网络框架，让用户去调用。"><a href="#1-实现整个http网络框架，让用户去调用。" class="headerlink" title="1. 实现整个http网络框架，让用户去调用。"></a>1. 实现整个http网络框架，让用户去调用。</h5><p>该方案实现成本过高，而且接入成本也很高，基本不能实现。</p>
+<h5 id="2-Android热修复方案"><a href="#2-Android热修复方案" class="headerlink" title="2. Android热修复方案"></a>2. Android热修复方案</h5><p>目前以Dexposed为代表的热修复方案无法支持ART虚拟机，不能用于5.0以上的Android操作系统；以Nova为代表的热修复方案需要首先被加载并且无法对修改现有类进行修改，不能用于sdk。</p>
+<h5 id="3-Java-AOP编程技术"><a href="#3-Java-AOP编程技术" class="headerlink" title="3. Java AOP编程技术"></a>3. Java AOP编程技术</h5><p>该方案能成功实现对Java的Hook，而且灵活可控，能够有效实现对API的监听。</p>
+<h4 id="现有Java-AOP技术"><a href="#现有Java-AOP技术" class="headerlink" title="现有Java AOP技术"></a>现有Java AOP技术</h4><ol>
+<li>Apt</li>
+<li>Aspectj</li>
+<li>Javassit</li>
+</ol>
+<p>它们的区别如下图所示<br><img src="/img/监听Android-APP网络请求的一种方法_1.png" alt="img"></p>
+<p>本文采用Aspectj来实现网络请求监听SDK</p>
+<h2 id="Android-Aspectj插件"><a href="#Android-Aspectj插件" class="headerlink" title="Android Aspectj插件"></a>Android Aspectj插件</h2><p><a href="https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx" target="_blank" rel="external">Android Aspectj Git Repo</a></p>
+<h5 id="接入步骤如下所示："><a href="#接入步骤如下所示：" class="headerlink" title="接入步骤如下所示："></a>接入步骤如下所示：</h5><ol>
+<li>关闭Android Intant Run<br><img src="/img/close_instant_run.png" alt="img"></li>
+<li>修改Project的.gradle文件<br><img src="/img/add_config_to_project.jpg" alt="img"></li>
+<li>修改Module的.gradle文件<br><img src="/img/add_config_to_module.jpg" alt="img"></li>
+</ol>
+<h2 id="API-Hook语法介绍"><a href="#API-Hook语法介绍" class="headerlink" title="API Hook语法介绍"></a>API Hook语法介绍</h2><p>常用的annotation有Before、Around、After，分别是在目标函数(需要进行aspectj hook的函数)执行的前、中、后期进行hook。主要的hook方式分为call和execution两种，它们区别如下所示:<br><strong>call</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// &lt;------- before call JoinPoint </span></div><div class="line">targetFunc() <span class="comment">// &lt;------ around call JoinPoint</span></div><div class="line"><span class="comment">// &lt;------- after call JoinPoint</span></div></pre></td></tr></table></figure></p>
+<p><strong>exection</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">targetFunc() &#123;</div><div class="line">    <span class="comment">// &lt;------- before execution JoinPoint </span></div><div class="line">    ... <span class="comment">// &lt;------ around exection JoinPoint</span></div><div class="line">    <span class="comment">// &lt;------- after exection JoinPoint</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下面将通过一段代码来演示：<br><strong>Activity.java</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class MainActivity extends AppCompatActivity &#123;</div><div class="line">    private static final String TAG = &quot;MainActivity&quot;;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        new Example().SayHelloWord();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>Example.java</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class Example &#123;</div><div class="line">    private static final String TAG = &quot;Example&quot;;</div><div class="line"></div><div class="line">    public void SayHelloWord() &#123;</div><div class="line">        Log.i(TAG, &quot;Hello world!&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>AspecjExample.java</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">@Aspect</div><div class="line">public class AspecjExample &#123;</div><div class="line">    private static final String TAG = &quot;AspecjExample&quot;;</div><div class="line">    protected static final AspecjExample instance = new AspecjExample();</div><div class="line"></div><div class="line">    @Before(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public void BeforeCall(JoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj Before call SayHelloWord&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Before(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public void BeforeExecution(JoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj Before execution SayHelloWord&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Around(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public Object AroundCall(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj Around start call SayHelloWord&quot;);</div><div class="line">        Object ret = joinPoint.proceed();</div><div class="line">        Log.i(TAG, &quot;Aspectj Around end call SayHelloWord&quot;);</div><div class="line">        return ret;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Around(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public Object AroundExecution(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj Around start execution SayHelloWord&quot;);</div><div class="line">        Object ret = joinPoint.proceed();</div><div class="line">        Log.i(TAG, &quot;Aspectj Around end execution SayHelloWord&quot;);</div><div class="line">        return ret;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @After(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public void AfterCall(JoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj After call SayHelloWord&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @After(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)</div><div class="line">    public void AfterExecution(JoinPoint joinPoint) throws Throwable &#123;</div><div class="line">        Log.i(TAG, &quot;Aspectj After execution SayHelloWord&quot;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static AspecjExample aspectOf() &#123;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输入结果为：<br><img src="/img/aspectj_example_output.png" alt="img"></p>
+<h2 id="如何实现对网络请求API的监听"><a href="#如何实现对网络请求API的监听" class="headerlink" title="如何实现对网络请求API的监听"></a>如何实现对网络请求API的监听</h2><h4 id="监听URLConnection"><a href="#监听URLConnection" class="headerlink" title="监听URLConnection:"></a>监听URLConnection:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@Around(&quot;call(* java.net.URL+.openConnection(..))&quot;)</div><div class="line">public Object onHttpURLOpenConnect(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 建立Http连接，并获取主机IP和DNS时间</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Around(&quot;call(* java.net.URLConnection+.getInputStream(..))&quot;)</div><div class="line">public Object onHttpURLConnectInput(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 获取InputSteam，创建该InputSteam的代理，并且将代理作为结果返回</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="监听OkHttp"><a href="#监听OkHttp" class="headerlink" title="监听OkHttp:"></a>监听OkHttp:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">@Around(&quot;call(* okhttp3.Dns+.lookup(..))&quot;)</div><div class="line">public Object onOkHttp3DnsLookup(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 获取Host IP和DNS时间</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Around(&quot;call(* java.net.InetSocketAddress+.createUnresolved(..))&quot;)</div><div class="line">public Object onSocketAddressResolve(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 获取Host IP和DNS时间</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Around(&quot;call(* okhttp3.Response.Builder+.build(..))&quot;)</div><div class="line">public Object onOkHttp3RespBuild(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 保存Response和ResponseBody</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Around(&quot;call(* okhttp3.ResponseBody+.source(..))&quot;)</div><div class="line">public Object onOkHttp3RespBodySource(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 建立ResponseBody的代理，并把该代理作为结果返回</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="监听WebView"><a href="#监听WebView" class="headerlink" title="监听WebView"></a>监听WebView</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@Around(&quot;call(* android.webkit.WebView+.setWebViewClient(..))&quot;)</div><div class="line">public Object onWebViewSetClient(ProceedingJoinPoint joinPoint) throws Throwable &#123;</div><div class="line">    ... // 建立WebViewClient代理，并把带监听功能的代理作为结果返回</div><div class="line">&#125;</div><div class="line"></div><div class="line">@Before(&quot;call(* android.webkit.WebView+.loadUrl(..))&quot;)</div><div class="line">public void onWebViewLoadUrl(JoinPoint joinPoint) &#123;</div><div class="line">    ... // 如果该WebView未设置WebViewClient，就给它设置监听WebViewClient</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+    
+
+    
+</div>
+
+
+                
+
+                <!-- Post Comments -->
+                
+                    
+
+
+
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    <!-- Prev Nav -->
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/03/26/ACM-求数组的最小和分割法的一种O-nlogn-思路/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+
+        </div>
+    </div>
+
+
+
+                    
+                        <!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay"></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored sidebar-fixed-left" role="navigation">
+    <div id="sidebar-main">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+        <i class="material-icons">clear_all</i>
+        <span class="mdl-button__ripple-container">
+            <span class="mdl-ripple">
+            </span>
+        </span>
+    </button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="Carmen's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        zhongxuqi.1991@gmail.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+
+        <!-- Sidebar Navigation  -->
+        <ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+            
+                <li>
+                    <a href="#" target="_blank" title="Email Me">
+                        
+                            <i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    
+        <li id="sidebar-first-li">
+            <a href="/" target="_self">
+                
+                    <i class="material-icons sidebar-material-icons">home</i>
+                
+                主页
+            </a>
+        </li>
+        
+    
+
+    <!-- Archives  -->
+    
+        <li class="dropdown">
+            <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+                
+                    <i class="material-icons sidebar-material-icons">inbox</i>
+                
+                    归档
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar_archives-link" href="/archives/2017/03/">三月 2017<span class="sidebar_archives-count">3</span></a>
+            </ul>
+        </li>
+        
+    
+
+    <!-- Categories  -->
+    
+
+    <!-- Pages  -->
+    
+
+    <!-- Article Number  -->
+    
+</ul>
+
+
+        <!-- Sidebar Footer -->
+        <!--
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持和动力。 :)
+-->
+
+<!-- Sidebar Divider -->
+
+    <div class="sidebar-divider"></div>
+
+
+<!-- Theme Material -->
+
+    <a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+        <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+            主题 - Material
+            <span class="sidebar-badge badge-circle">i</span>
+        </div>
+    </a>
+
+
+<!-- Help & Support -->
+<!--
+
+-->
+
+<!-- Feedback -->
+<!--
+
+-->
+
+<!-- About Theme -->
+<!--
+
+-->
+
+    </div>
+
+    <!-- Sidebar Image -->
+    
+
+</aside>
+
+                    
+
+                    
+                        <!-- Footer Top Button -->
+                        <div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+
+                    
+
+                    <!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+    
+        <!-- Paradox Footer Left Section -->
+        <div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+        <a href="https://twitter.com/twitter" target="_blank">
+            <button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-twitter.png);">
+                <span class="visuallyhidden">Twitter</span>
+            </button><!--
+     --></a>
+    
+
+    <!-- Facebook -->
+    
+        <a href="https://www.facebook.com/facebook" target="_blank">
+            <button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-facebook.png);">
+                <span class="visuallyhidden">Facebook</span>
+            </button><!--
+     --></a>
+    
+
+    <!-- Google + -->
+    
+        <a href="https://www.google.com/" target="_blank">
+            <button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-gplus.png);">
+                <span class="visuallyhidden">Google Plus</span>
+            </button><!--
+     --></a>
+    
+
+    <!-- Weibo -->
+    
+
+    <!-- Instagram -->
+    
+
+    <!-- Tumblr -->
+    
+
+    <!-- Github -->
+    
+
+    <!-- LinkedIn -->
+    
+
+    <!-- Zhihu -->
+    
+
+    <!-- Bilibili -->
+    
+
+    <!-- Telegram -->
+    
+</div>
+
+
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright&nbsp;©&nbsp;
+            <script type="text/javascript">
+                var fd = new Date();
+                document.write(fd.getFullYear());
+            </script>
+            &nbsp;Carmen's Blog
+        </div>
+
+        <!-- Paradox Footer Right Section -->
+
+        <!--
+        I am glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+        It will not impact the appearance and can give developers a lot of support :)
+
+        很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+        它不会影响美观并可以给开发者很大的支持。 :)
+        -->
+
+        <div class="mdl-mini-footer--right-section">
+            <div>
+                <div class="footer-develop-div">Powered by <a href="https://hexo.io" target="_blank" class="footer-develop-a">Hexo</a></div>
+                <div class="footer-develop-div">Theme - <a href="https://github.com/viosey/hexo-theme-material" target="_blank" class="footer-develop-a">Material</a></div>
+            </div>
+        </div>
+    
+</footer>
+
+
+                    <!-- Import File -->
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/js.min.js"></script>
+<script src="/js/nprogress.js"></script>
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    $('#nprogress .bar').css({
+        'background': '#29d'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #29d, 0 0 15px #29d'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#29d',
+        'border-left-color': '#29d'
+    });
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Swiftye -->
+
+
+<!-- Local Search-->
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $('.post-toc-wrap').parent('.mdl-menu__container').css('position', 'fixed');
+    });
+</script>
+
+<!-- MathJax Load-->
+
+
+                </main>
+            </div>
+        </body>
+    
+</html>
