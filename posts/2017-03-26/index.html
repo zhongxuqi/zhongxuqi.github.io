@@ -19,14 +19,14 @@ f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i&#43;2,j,floor(k/2))  },  ...  
     "@type": "WebSite",
     "name": "ZhongXuQi的技术博客",
     
-    "url": "http:\/\/example.org\/"
+    "url": "https:\/\/zhongxuqi.github.io\/"
 }
 </script><script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "Organization",
   "name": "",
-  "url": "http:\/\/example.org\/"
+  "url": "https:\/\/zhongxuqi.github.io\/"
   
   
   
@@ -41,14 +41,14 @@ f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i&#43;2,j,floor(k/2))  },  ...  
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "http:\/\/example.org\/",
+          "@id": "https:\/\/zhongxuqi.github.io\/",
           "name": "home"
         }
     },{
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "http:\/\/example.org\/posts\/2017-03-26\/",
+          "@id": "https:\/\/zhongxuqi.github.io\/posts\/2017-03-26\/",
           "name": "[ acm] 求数组的最小和分割法的一种 o( n*log n)思路"
         }
     }]
@@ -66,15 +66,15 @@ f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i&#43;2,j,floor(k/2))  },  ...  
   "wordCount":  62 ,
   "datePublished" : "2017-03-26T15:32:25",
   "dateModified" : "2017-03-26T15:32:25",
-  "image" : "http:\/\/example.org\/",
+  "image" : "https:\/\/zhongxuqi.github.io\/",
   "keywords" : [ "" ],
-  "mainEntityOfPage" : "http:\/\/example.org\/posts\/2017-03-26\/",
+  "mainEntityOfPage" : "https:\/\/zhongxuqi.github.io\/posts\/2017-03-26\/",
   "publisher" : {
     "@type": "Organization",
-    "name" : "http:\/\/example.org\/",
+    "name" : "https:\/\/zhongxuqi.github.io\/",
     "logo" : {
         "@type" : "ImageObject",
-        "url" : "http:\/\/example.org\/",
+        "url" : "https:\/\/zhongxuqi.github.io\/",
         "height" :  60 ,
         "width" :  60
     }
@@ -89,7 +89,7 @@ output 7
 动态规划思路(O(N^M)) 令状态最优函数为f(i,j,k)，含义为从第i个数到第j个放入k个插板的最优解，那个可以得出状态转移公式为
 f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i&#43;2,j,floor(k/2))  },  ...  ,  Max{  f(i,i&#43;x,ceil(k/2) - 1),  f(i&#43;x&#43;1,j,floor(k/2))  },  ...  ,  Max{  f(i,j-1,ceil(k/2) - 1),  f(j,j,floor(k/2))  } } 其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。 从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。
 另类思路(O(N*logN)) 先求出数组的和为sum，因此可知最优方案的取值范围是[sum/(M&#43;1),sum]。 所以可以通过二分法查找最大值，假设初始值为(sum/(M&#43;1) &#43; sum) / 2 = sum * M / (M &#43; 1) / 2。 然后把每次估计出来的最优值代入数组中验证，即从头到尾遍历一次数组，当和快超过估计值的时候，放入一个插板并把累计值置零，重新累加。 依次迭代，最终便可得出最优解。 二分法查找的复杂度为logN，每次遍历的复杂度为O(N) 因此，该方法的复杂度为O(N*logN)">
-<meta property="og:url" content="http://example.org/posts/2017-03-26/" />
+<meta property="og:url" content="https://zhongxuqi.github.io/posts/2017-03-26/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="ZhongXuQi的技术博客" />
 
@@ -101,10 +101,10 @@ output 7
 f(i,j,k) = Min{ …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.94.2" />
-  <link rel="alternate" href="http://example.org/index.xml" type="application/rss+xml" title="ZhongXuQi的技术博客"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="alternate" href="https://zhongxuqi.github.io/index.xml" type="application/rss+xml" title="ZhongXuQi的技术博客"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="http://example.org/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="http://example.org/css/syntax.css" /><link rel="stylesheet" href="http://example.org/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://zhongxuqi.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://zhongxuqi.github.io/css/syntax.css" /><link rel="stylesheet" href="https://zhongxuqi.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
 
@@ -120,7 +120,7 @@ f(i,j,k) = Min{ …">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="http://example.org/">ZhongXuQi的技术博客</a>
+      <a class="navbar-brand" href="https://zhongxuqi.github.io/">ZhongXuQi的技术博客</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-navbar">
@@ -277,7 +277,7 @@ f(i,j,k) = Min{ …">
           
           
             <li class="next">
-              <a href="http://example.org/posts/2017-03-27/" data-toggle="tooltip" data-placement="top" title="监听Android APP网络请求的一种方法">Next Post &rarr;</a>
+              <a href="https://zhongxuqi.github.io/posts/2017-03-27/" data-toggle="tooltip" data-placement="top" title="监听Android APP网络请求的一种方法">Next Post &rarr;</a>
             </li>
           
         </ul>
@@ -309,7 +309,7 @@ f(i,j,k) = Min{ …">
 
           
             &nbsp;&bull;&nbsp;
-            <a href="http://example.org/">ZhongXuQi的技术博客</a>
+            <a href="https://zhongxuqi.github.io/">ZhongXuQi的技术博客</a>
           
         </p>
         
@@ -325,8 +325,8 @@ f(i,j,k) = Min{ …">
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script src="http://example.org/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="http://example.org/js/load-photoswipe.js"></script>
+<script src="https://zhongxuqi.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://zhongxuqi.github.io/js/load-photoswipe.js"></script>
 
 
 

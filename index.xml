@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ZhongXuQi的技术博客</title>
-    <link>http://example.org/</link>
+    <link>https://zhongxuqi.github.io/</link>
     <description>Recent content on ZhongXuQi的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 07 Apr 2017 15:46:39 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 07 Apr 2017 15:46:39 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用docker进行项目开发</title>
-      <link>http://example.org/posts/2017-04-07/</link>
+      <link>https://zhongxuqi.github.io/posts/2017-04-07/</link>
       <pubDate>Fri, 07 Apr 2017 15:46:39 +0800</pubDate>
       
-      <guid>http://example.org/posts/2017-04-07/</guid>
+      <guid>https://zhongxuqi.github.io/posts/2017-04-07/</guid>
       <description>docker是目前大红大紫的云计算技术，它极大的简化项目的部署并提高计算资源的利用率；同样，它也能用于项目的开发，提高代码的开发效率。
 用docker进行项目开发的优点  不会污染当前环境，包括环境变量和临时文件。 方便得进行第三方库的版本管理，例如可以分别构建go1.7和go1.8的docker image，编译的时候只用切换docker image就可以实现用不同的go版本进行代码编译。 团队合作中，可以方便地保证大家使用的编译环境是一样的，避免了很多不必要的问题。  用docker进行开发的具体实现步骤 以lowtea为例子，介绍如何用docker进行项目开发。
 构建docker image 前端docker image的Dockerfile，构建出前端运行环境image。
@@ -22,10 +22,10 @@ FROMhub.c.163.com/library/golang:1.7.4MAINTAINERzhongxuqiRUN mkdir /golang &amp;
     
     <item>
       <title>监听Android APP网络请求的一种方法</title>
-      <link>http://example.org/posts/2017-03-27/</link>
+      <link>https://zhongxuqi.github.io/posts/2017-03-27/</link>
       <pubDate>Mon, 27 Mar 2017 11:11:12 +0800</pubDate>
       
-      <guid>http://example.org/posts/2017-03-27/</guid>
+      <guid>https://zhongxuqi.github.io/posts/2017-03-27/</guid>
       <description>目前市面上有很多APM厂商，用户只用集成Android SDK，写一行启动代码就可以轻松实现对APP网络请求的监听，非常神奇。本文就介绍一种可以实现该功能的技术，实现对APP网络请求的全量监听。
 需求  SDK集成后能实现对APP网络请求的监听。 接入无成本，只需要少量的启动代码，不需要修改已有的代码。  可以实现监听网络请求的技术方案 1. 实现整个http网络框架，让用户去调用。 该方案实现成本过高，而且接入成本也很高，基本不能实现。
 2. Android热修复方案 目前以Dexposed为代表的热修复方案无法支持ART虚拟机，不能用于5.0以上的Android操作系统；以Nova为代表的热修复方案需要首先被加载并且无法对修改现有类进行修改，不能用于sdk。
@@ -39,10 +39,10 @@ targetFunc() {  // &amp;lt;------- before execution JoinPoint  .</description>
     
     <item>
       <title>[ACM] 求数组的最小和分割法的一种O(N*logN)思路</title>
-      <link>http://example.org/posts/2017-03-26/</link>
+      <link>https://zhongxuqi.github.io/posts/2017-03-26/</link>
       <pubDate>Sun, 26 Mar 2017 15:32:25 +0800</pubDate>
       
-      <guid>http://example.org/posts/2017-03-26/</guid>
+      <guid>https://zhongxuqi.github.io/posts/2017-03-26/</guid>
       <description>题目 一个长度为N的数组，有M(M &amp;lt; N)个插板。在每个分割方案中，每个分组和的最大值作为该分割方式的值。那么求最优方案使得值为最小
 example input: N=[2,5,7,4,7,4], M=3
 output 7
