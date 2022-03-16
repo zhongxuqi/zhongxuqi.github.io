@@ -6,7 +6,18 @@
     <description>Recent content on ZhongXuQi的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 07 Apr 2017 15:46:39 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Mar 2022 17:33:37 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>打造以太坊私有链</title>
+      <link>https://zhongxuqi.github.io/posts/2022-03-15/</link>
+      <pubDate>Tue, 15 Mar 2022 17:33:37 +0800</pubDate>
+      
+      <guid>https://zhongxuqi.github.io/posts/2022-03-15/</guid>
+      <description>1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中
+3. 配置初始状态 保存配置到genesis.json文件
+{  &amp;#34;config&amp;#34;: {  &amp;#34;chainId&amp;#34;: 7777,  &amp;#34;homesteadBlock&amp;#34;: 0,  &amp;#34;eip150Block&amp;#34;: 0,  &amp;#34;eip155Block&amp;#34;: 0,  &amp;#34;eip158Block&amp;#34;: 0,  &amp;#34;byzantiumBlock&amp;#34;: 0,  &amp;#34;constantinopleBlock&amp;#34;: 0,  &amp;#34;petersburgBlock&amp;#34;: 0,  &amp;#34;ethash&amp;#34;: {}  },  &amp;#34;difficulty&amp;#34;: &amp;#34;1&amp;#34;,  &amp;#34;gasLimit&amp;#34;: &amp;#34;8000000&amp;#34;,  &amp;#34;alloc&amp;#34;: {  &amp;#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&amp;#34;: { &amp;#34;balance&amp;#34;: &amp;#34;300000&amp;#34; },  &amp;#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&amp;#34;: { &amp;#34;balance&amp;#34;: &amp;#34;400000&amp;#34; }  } } 执行geth init --datadir data genesis.</description>
+    </item>
+    
     <item>
       <title>使用docker进行项目开发</title>
       <link>https://zhongxuqi.github.io/posts/2017-04-07/</link>
