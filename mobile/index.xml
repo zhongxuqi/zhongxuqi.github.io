@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mobiles on ZhongXuQi的技术博客</title>
+    <link>https://zhongxuqi.github.io/mobile/</link>
+    <description>Recent content in Mobiles on ZhongXuQi的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 27 Mar 2017 11:11:12 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/mobile/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>监听Android APP网络请求的一种方法</title>
+      <link>https://zhongxuqi.github.io/mobile/2017-03-27/</link>
+      <pubDate>Mon, 27 Mar 2017 11:11:12 +0800</pubDate>
+      
+      <guid>https://zhongxuqi.github.io/mobile/2017-03-27/</guid>
+      <description>目前市面上有很多APM厂商，用户只用集成Android SDK，写一行启动代码就可以轻松实现对APP网络请求的监听，非常神奇。本文就介绍一种可以实现该功能的技术，实现对APP网络请求的全量监听。
+需求  SDK集成后能实现对APP网络请求的监听。 接入无成本，只需要少量的启动代码，不需要修改已有的代码。  可以实现监听网络请求的技术方案 1. 实现整个http网络框架，让用户去调用。 该方案实现成本过高，而且接入成本也很高，基本不能实现。
+2. Android热修复方案 目前以Dexposed为代表的热修复方案无法支持ART虚拟机，不能用于5.0以上的Android操作系统；以Nova为代表的热修复方案需要首先被加载并且无法对修改现有类进行修改，不能用于sdk。
+3. Java AOP编程技术 该方案能成功实现对Java的Hook，而且灵活可控，能够有效实现对API的监听。
+现有Java AOP技术  Apt Aspectj Javassit  它们的区别如下图所示 本文采用Aspectj来实现网络请求监听SDK
+Android Aspectj插件 Android Aspectj Git Repo
+接入步骤如下所示：  关闭Android Intant Run  修改Project的.gradle文件  修改Module的.gradle文件   API Hook语法介绍 常用的annotation有Before、Around、After，分别是在目标函数(需要进行aspectj hook的函数)执行的前、中、后期进行hook。主要的hook方式分为call和execution两种，它们区别如下所示: call
+// &amp;lt;------- before call JoinPoint targetFunc() // &amp;lt;------ around call JoinPoint // &amp;lt;------- after call JoinPoint  exection
+targetFunc() { // &amp;lt;------- before execution JoinPoint .</description>
+    </item>
+    
+  </channel>
+</rss>

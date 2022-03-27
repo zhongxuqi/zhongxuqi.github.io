@@ -9,43 +9,44 @@
     <lastBuildDate>Sun, 27 Mar 2022 08:08:21 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Eth智能合约签名校验 - 可用于实现多签合约</title>
-      <link>https://zhongxuqi.github.io/posts/2022-03-27/</link>
+      <link>https://zhongxuqi.github.io/blockchain/2022-03-27/</link>
       <pubDate>Sun, 27 Mar 2022 08:08:21 +0800</pubDate>
       
-      <guid>https://zhongxuqi.github.io/posts/2022-03-27/</guid>
-      <description>1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(&amp;lt;input eth node url/&amp;gt;)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print(&amp;#39;address: &amp;#39;, account.address) rawText = &amp;#39;hello&amp;#39; # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print(&amp;#39;message hash: &amp;#39;, signedMessage.messageHash.hex()) # print(signedMessage) print(&amp;#39;v: &amp;#39;, int(signedMessage.v)) print(&amp;#39;r: &amp;#39;, hex(signedMessage.r)) print(&amp;#39;s: &amp;#39;, hex(signedMessage.s)) print(&amp;#39;signature: &amp;#39;, signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3.</description>
+      <guid>https://zhongxuqi.github.io/blockchain/2022-03-27/</guid>
+      <description>1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(&amp;lt;input eth node url/&amp;gt;)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print(&#39;address: &#39;, account.address) rawText = &#39;hello&#39; # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print(&#39;message hash: &#39;, signedMessage.messageHash.hex()) # print(signedMessage) print(&#39;v: &#39;, int(signedMessage.v)) print(&#39;r: &#39;, hex(signedMessage.r)) print(&#39;s: &#39;, hex(signedMessage.s)) print(&#39;signature: &#39;, signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature))  2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363  3.</description>
     </item>
     
     <item>
       <title>打造以太坊私有链，合约的部署与使用</title>
-      <link>https://zhongxuqi.github.io/posts/2022-03-15/</link>
+      <link>https://zhongxuqi.github.io/blockchain/2022-03-15/</link>
       <pubDate>Tue, 15 Mar 2022 17:33:37 +0800</pubDate>
       
-      <guid>https://zhongxuqi.github.io/posts/2022-03-15/</guid>
-      <description>1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中
+      <guid>https://zhongxuqi.github.io/blockchain/2022-03-15/</guid>
+      <description>1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git  2. 编译 $ cd go-ethereum $ make geth  把./build/bin/geth添加到可执行路径中
 3. 配置初始状态 保存配置到genesis.json文件
-{  &amp;#34;config&amp;#34;: {  &amp;#34;chainId&amp;#34;: 7777,  &amp;#34;homesteadBlock&amp;#34;: 0,  &amp;#34;eip150Block&amp;#34;: 0,  &amp;#34;eip155Block&amp;#34;: 0,  &amp;#34;eip158Block&amp;#34;: 0,  &amp;#34;byzantiumBlock&amp;#34;: 0,  &amp;#34;constantinopleBlock&amp;#34;: 0,  &amp;#34;petersburgBlock&amp;#34;: 0,  &amp;#34;ethash&amp;#34;: {}  },  &amp;#34;difficulty&amp;#34;: &amp;#34;1&amp;#34;,  &amp;#34;gasLimit&amp;#34;: &amp;#34;8000000&amp;#34;,  &amp;#34;alloc&amp;#34;: {  &amp;#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&amp;#34;: { &amp;#34;balance&amp;#34;: &amp;#34;300000&amp;#34; },  &amp;#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&amp;#34;: { &amp;#34;balance&amp;#34;: &amp;#34;400000&amp;#34; }  } } 执行geth init --datadir data genesis.</description>
+{ &amp;quot;config&amp;quot;: { &amp;quot;chainId&amp;quot;: 7777, &amp;quot;homesteadBlock&amp;quot;: 0, &amp;quot;eip150Block&amp;quot;: 0, &amp;quot;eip155Block&amp;quot;: 0, &amp;quot;eip158Block&amp;quot;: 0, &amp;quot;byzantiumBlock&amp;quot;: 0, &amp;quot;constantinopleBlock&amp;quot;: 0, &amp;quot;petersburgBlock&amp;quot;: 0, &amp;quot;ethash&amp;quot;: {} }, &amp;quot;difficulty&amp;quot;: &amp;quot;1&amp;quot;, &amp;quot;gasLimit&amp;quot;: &amp;quot;8000000&amp;quot;, &amp;quot;alloc&amp;quot;: { &amp;quot;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&amp;quot;: { &amp;quot;balance&amp;quot;: &amp;quot;300000&amp;quot; }, &amp;quot;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&amp;quot;: { &amp;quot;balance&amp;quot;: &amp;quot;400000&amp;quot; } } }  执行geth init --datadir data genesis.json，初始化以太坊配置。
+4. 运行以太坊节点 执行geth --datadir data --nodiscover --mine console，节点启动。</description>
     </item>
     
     <item>
       <title>使用docker进行项目开发</title>
-      <link>https://zhongxuqi.github.io/posts/2017-04-07/</link>
+      <link>https://zhongxuqi.github.io/tools/2017-04-07/</link>
       <pubDate>Fri, 07 Apr 2017 15:46:39 +0800</pubDate>
       
-      <guid>https://zhongxuqi.github.io/posts/2017-04-07/</guid>
+      <guid>https://zhongxuqi.github.io/tools/2017-04-07/</guid>
       <description>docker是目前大红大紫的云计算技术，它极大的简化项目的部署并提高计算资源的利用率；同样，它也能用于项目的开发，提高代码的开发效率。
 用docker进行项目开发的优点  不会污染当前环境，包括环境变量和临时文件。 方便得进行第三方库的版本管理，例如可以分别构建go1.7和go1.8的docker image，编译的时候只用切换docker image就可以实现用不同的go版本进行代码编译。 团队合作中，可以方便地保证大家使用的编译环境是一样的，避免了很多不必要的问题。  用docker进行开发的具体实现步骤 以lowtea为例子，介绍如何用docker进行项目开发。
 构建docker image 前端docker image的Dockerfile，构建出前端运行环境image。
-FROMhub.c.163.com/library/node:6.10.0MAINTAINERzhongxuqiRUN npm install -g bower &amp;amp;&amp;amp; npm install -g gulp &amp;amp;&amp;amp; mkdir /workspaceWORKDIR/workspace后端docker image的Dockerfile，构建出后端运行环境的image。
-FROMhub.c.163.com/library/golang:1.7.4MAINTAINERzhongxuqiRUN mkdir /golang &amp;amp;&amp;amp; export GOPATH=/golang &amp;amp;&amp;amp; mkdir /workspaceWORKDIR/workspace编写Makefile SHELL=/bin/bash  lowtea-frontend: 	cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve  docker-lowtea-frontend: 	cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve -p http://lowtea-backend:7070  lowtea-backend: 	cd lowtea &amp;amp;&amp;amp; source env.</description>
+FROM hub.c.163.com/library/node:6.10.0 MAINTAINER zhongxuqi RUN npm install -g bower &amp;amp;&amp;amp; npm install -g gulp &amp;amp;&amp;amp; mkdir /workspace WORKDIR /workspace  后端docker image的Dockerfile，构建出后端运行环境的image。
+FROM hub.c.163.com/library/golang:1.7.4 MAINTAINER zhongxuqi RUN mkdir /golang &amp;amp;&amp;amp; export GOPATH=/golang &amp;amp;&amp;amp; mkdir /workspace WORKDIR /workspace  编写Makefile SHELL=/bin/bash lowtea-frontend: cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve docker-lowtea-frontend: cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve -p http://lowtea-backend:7070 lowtea-backend: cd lowtea &amp;amp;&amp;amp; source env.</description>
     </item>
     
     <item>
       <title>监听Android APP网络请求的一种方法</title>
-      <link>https://zhongxuqi.github.io/posts/2017-03-27/</link>
+      <link>https://zhongxuqi.github.io/mobile/2017-03-27/</link>
       <pubDate>Mon, 27 Mar 2017 11:11:12 +0800</pubDate>
       
-      <guid>https://zhongxuqi.github.io/posts/2017-03-27/</guid>
+      <guid>https://zhongxuqi.github.io/mobile/2017-03-27/</guid>
       <description>目前市面上有很多APM厂商，用户只用集成Android SDK，写一行启动代码就可以轻松实现对APP网络请求的监听，非常神奇。本文就介绍一种可以实现该功能的技术，实现对APP网络请求的全量监听。
 需求  SDK集成后能实现对APP网络请求的监听。 接入无成本，只需要少量的启动代码，不需要修改已有的代码。  可以实现监听网络请求的技术方案 1. 实现整个http网络框架，让用户去调用。 该方案实现成本过高，而且接入成本也很高，基本不能实现。
 2. Android热修复方案 目前以Dexposed为代表的热修复方案无法支持ART虚拟机，不能用于5.0以上的Android操作系统；以Nova为代表的热修复方案需要首先被加载并且无法对修改现有类进行修改，不能用于sdk。
@@ -53,21 +54,21 @@ FROMhub.c.163.com/library/golang:1.7.4MAINTAINERzhongxuqiRUN mkdir /golang &amp;
 现有Java AOP技术  Apt Aspectj Javassit  它们的区别如下图所示 本文采用Aspectj来实现网络请求监听SDK
 Android Aspectj插件 Android Aspectj Git Repo
 接入步骤如下所示：  关闭Android Intant Run  修改Project的.gradle文件  修改Module的.gradle文件   API Hook语法介绍 常用的annotation有Before、Around、After，分别是在目标函数(需要进行aspectj hook的函数)执行的前、中、后期进行hook。主要的hook方式分为call和execution两种，它们区别如下所示: call
-// &amp;lt;------- before call JoinPoint targetFunc() // &amp;lt;------ around call JoinPoint // &amp;lt;------- after call JoinPoint exection
-targetFunc() {  // &amp;lt;------- before execution JoinPoint  .</description>
+// &amp;lt;------- before call JoinPoint targetFunc() // &amp;lt;------ around call JoinPoint // &amp;lt;------- after call JoinPoint  exection
+targetFunc() { // &amp;lt;------- before execution JoinPoint .</description>
     </item>
     
     <item>
       <title>[ACM] 求数组的最小和分割法的一种O(N*logN)思路</title>
-      <link>https://zhongxuqi.github.io/posts/2017-03-26/</link>
+      <link>https://zhongxuqi.github.io/acm/2017-03-26/</link>
       <pubDate>Sun, 26 Mar 2017 15:32:25 +0800</pubDate>
       
-      <guid>https://zhongxuqi.github.io/posts/2017-03-26/</guid>
+      <guid>https://zhongxuqi.github.io/acm/2017-03-26/</guid>
       <description>题目 一个长度为N的数组，有M(M &amp;lt; N)个插板。在每个分割方案中，每个分组和的最大值作为该分割方式的值。那么求最优方案使得值为最小
 example input: N=[2,5,7,4,7,4], M=3
 output 7
 动态规划思路(O(N^M)) 令状态最优函数为f(i,j,k)，含义为从第i个数到第j个放入k个插板的最优解，那个可以得出状态转移公式为
-f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i+2,j,floor(k/2))  },  ...  ,  Max{  f(i,i+x,ceil(k/2) - 1),  f(i+x+1,j,floor(k/2))  },  ...  ,  Max{  f(i,j-1,ceil(k/2) - 1),  f(j,j,floor(k/2))  } } 其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。 从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。
+f(i,j,k) = Min{ Max{ f(i,i,ceil(k/2) - 1), f(i+2,j,floor(k/2)) }, ... , Max{ f(i,i+x,ceil(k/2) - 1), f(i+x+1,j,floor(k/2)) }, ... , Max{ f(i,j-1,ceil(k/2) - 1), f(j,j,floor(k/2)) } }  其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。 从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。
 另类思路(O(N*logN)) 先求出数组的和为sum，因此可知最优方案的取值范围是[sum/(M+1),sum]。 所以可以通过二分法查找最大值，假设初始值为(sum/(M+1) + sum) / 2 = sum * M / (M + 1) / 2。 然后把每次估计出来的最优值代入数组中验证，即从头到尾遍历一次数组，当和快超过估计值的时候，放入一个插板并把累计值置零，重新累加。 依次迭代，最终便可得出最优解。 二分法查找的复杂度为logN，每次遍历的复杂度为O(N) 因此，该方法的复杂度为O(N*logN)</description>
     </item>
     

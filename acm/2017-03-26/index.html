@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>[ACM] 求数组的最小和分割法的一种O(N*logN)思路 | ZhongXuQi的技术博客</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="[ACM] 求数组的最小和分割法的一种O(N*logN)思路" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
+  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/zhongxuqi.github.io\/acm\/2017-03-26\/",
+      "name": "[ACM] 求数组的最小和分割法的一种O(N*logN)思路",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">主页</a>
+      </li>
+    
+      <li>
+        <a  href="/blockchain">区块链</a>
+      </li>
+    
+      <li>
+        <a  href="/mobile">移动端开发</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/acm">ACM</a>
+      </li>
+    
+      <li>
+        <a  href="/tools">开发工具</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">[ACM] 求数组的最小和分割法的一种O(N*logN)思路</h1>
+            <time datetime="2017-03-26 15:32:25 &#43;0800 CST" class="post__date">Mar 26 2017</time> 
+          </header>
+          <article class="post__content">
+              
+<h2 id="题目">题目<a class="anchor" href="#题目">#</a></h2>
+<p>一个长度为N的数组，有M(M &lt; N)个插板。在每个分割方案中，每个分组和的最大值作为该分割方式的值。那么求最优方案使得值为最小</p>
+<h3 id="example">example<a class="anchor" href="#example">#</a></h3>
+<p>input: N=[2,5,7,4,7,4], M=3</p>
+<h3 id="output">output<a class="anchor" href="#output">#</a></h3>
+<p>7</p>
+<h2 id="动态规划思路onm">动态规划思路(O(N^M))<a class="anchor" href="#动态规划思路onm">#</a></h2>
+<p>令状态最优函数为f(i,j,k)，含义为从第i个数到第j个放入k个插板的最优解，那个可以得出状态转移公式为</p>
+<pre><code class="language-js">f(i,j,k) = Min{
+    Max{
+        f(i,i,ceil(k/2) - 1), 
+        f(i+2,j,floor(k/2))
+    }, 
+    ...
+    ,
+    Max{
+        f(i,i+x,ceil(k/2) - 1), 
+        f(i+x+1,j,floor(k/2))
+    }, 
+    ...
+    ,
+    Max{
+        f(i,j-1,ceil(k/2) - 1), 
+        f(j,j,floor(k/2))
+    }
+}
+</code></pre>
+<p>其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。
+从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。</p>
+<h2 id="另类思路onlogn">另类思路(O(N*logN))<a class="anchor" href="#另类思路onlogn">#</a></h2>
+<p>先求出数组的和为sum，因此可知最优方案的取值范围是[sum/(M+1),sum]。
+所以可以通过二分法查找最大值，假设初始值为(sum/(M+1) + sum) / 2 = sum * M / (M + 1) / 2。
+然后把每次估计出来的最优值代入数组中验证，即从头到尾遍历一次数组，当和快超过估计值的时候，放入一个插板并把累计值置零，重新累加。
+依次迭代，最终便可得出最优解。
+二分法查找的复杂度为logN，每次遍历的复杂度为O(N)
+因此，该方法的复杂度为O(N*logN)</p>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>

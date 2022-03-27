@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>监听Android APP网络请求的一种方法 | ZhongXuQi的技术博客</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="监听Android APP网络请求的一种方法" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
+  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/zhongxuqi.github.io\/mobile\/2017-03-27\/",
+      "name": "监听Android APP网络请求的一种方法",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">主页</a>
+      </li>
+    
+      <li>
+        <a  href="/blockchain">区块链</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/mobile">移动端开发</a>
+      </li>
+    
+      <li>
+        <a  href="/acm">ACM</a>
+      </li>
+    
+      <li>
+        <a  href="/tools">开发工具</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">监听Android APP网络请求的一种方法</h1>
+            <time datetime="2017-03-27 11:11:12 &#43;0800 CST" class="post__date">Mar 27 2017</time> 
+          </header>
+          <article class="post__content">
+              
+<p>目前市面上有很多APM厂商，用户只用集成Android SDK，写一行启动代码就可以轻松实现对APP网络请求的监听，非常神奇。本文就介绍一种可以实现该功能的技术，实现对APP网络请求的全量监听。</p>
+<h2 id="需求">需求<a class="anchor" href="#需求">#</a></h2>
+<ol>
+<li>SDK集成后能实现对APP网络请求的监听。</li>
+<li>接入无成本，只需要少量的启动代码，不需要修改已有的代码。</li>
+</ol>
+<h2 id="可以实现监听网络请求的技术方案">可以实现监听网络请求的技术方案<a class="anchor" href="#可以实现监听网络请求的技术方案">#</a></h2>
+<h5 id="1-实现整个http网络框架让用户去调用">1. 实现整个http网络框架，让用户去调用。</h5>
+<p>该方案实现成本过高，而且接入成本也很高，基本不能实现。</p>
+<h5 id="2-android热修复方案">2. Android热修复方案</h5>
+<p>目前以Dexposed为代表的热修复方案无法支持ART虚拟机，不能用于5.0以上的Android操作系统；以Nova为代表的热修复方案需要首先被加载并且无法对修改现有类进行修改，不能用于sdk。</p>
+<h5 id="3-java-aop编程技术">3. Java AOP编程技术</h5>
+<p>该方案能成功实现对Java的Hook，而且灵活可控，能够有效实现对API的监听。</p>
+<h4 id="现有java-aop技术">现有Java AOP技术</h4>
+<ol>
+<li>Apt</li>
+<li>Aspectj</li>
+<li>Javassit</li>
+</ol>
+<p>它们的区别如下图所示
+<img src="/images/%E7%9B%91%E5%90%ACAndroid-APP%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95_1.png" alt="img"></p>
+<p>本文采用Aspectj来实现网络请求监听SDK</p>
+<h2 id="android-aspectj插件">Android Aspectj插件<a class="anchor" href="#android-aspectj插件">#</a></h2>
+<p><a href="https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>Android Aspectj Git Repo</a></p>
+<h5 id="接入步骤如下所示">接入步骤如下所示：</h5>
+<ol>
+<li>关闭Android Intant Run
+<img src="/images/close_instant_run.png" alt="img"></li>
+<li>修改Project的.gradle文件
+<img src="/images/add_config_to_project.jpg" alt="img"></li>
+<li>修改Module的.gradle文件
+<img src="/images/add_config_to_module.jpg" alt="img"></li>
+</ol>
+<h2 id="api-hook语法介绍">API Hook语法介绍<a class="anchor" href="#api-hook语法介绍">#</a></h2>
+<p>常用的annotation有Before、Around、After，分别是在目标函数(需要进行aspectj hook的函数)执行的前、中、后期进行hook。主要的hook方式分为call和execution两种，它们区别如下所示:
+<strong>call</strong></p>
+<pre><code class="language-js">// &lt;------- before call JoinPoint 
+targetFunc() // &lt;------ around call JoinPoint
+// &lt;------- after call JoinPoint 
+</code></pre>
+<p><strong>exection</strong></p>
+<pre><code class="language-js">targetFunc() {
+    // &lt;------- before execution JoinPoint 
+    ... // &lt;------ around exection JoinPoint
+    // &lt;------- after exection JoinPoint
+}
+</code></pre>
+<p>下面将通过一段代码来演示：
+<strong>Activity.java</strong></p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+    private static final String TAG = &quot;MainActivity&quot;;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        new Example().SayHelloWord();
+    }
+}
+</code></pre>
+<p><strong>Example.java</strong></p>
+<pre><code>public class Example {
+    private static final String TAG = &quot;Example&quot;;
+
+    public void SayHelloWord() {
+        Log.i(TAG, &quot;Hello world!&quot;);
+    }
+}
+</code></pre>
+<p><strong>AspecjExample.java</strong></p>
+<pre><code>@Aspect
+public class AspecjExample {
+    private static final String TAG = &quot;AspecjExample&quot;;
+    protected static final AspecjExample instance = new AspecjExample();
+
+    @Before(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public void BeforeCall(JoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj Before call SayHelloWord&quot;);
+    }
+
+    @Before(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public void BeforeExecution(JoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj Before execution SayHelloWord&quot;);
+    }
+
+    @Around(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public Object AroundCall(ProceedingJoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj Around start call SayHelloWord&quot;);
+        Object ret = joinPoint.proceed();
+        Log.i(TAG, &quot;Aspectj Around end call SayHelloWord&quot;);
+        return ret;
+    }
+
+    @Around(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public Object AroundExecution(ProceedingJoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj Around start execution SayHelloWord&quot;);
+        Object ret = joinPoint.proceed();
+        Log.i(TAG, &quot;Aspectj Around end execution SayHelloWord&quot;);
+        return ret;
+    }
+
+    @After(&quot;call(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public void AfterCall(JoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj After call SayHelloWord&quot;);
+    }
+
+    @After(&quot;execution(* testapp.aspectjtest.Example.SayHelloWord(..))&quot;)
+    public void AfterExecution(JoinPoint joinPoint) throws Throwable {
+        Log.i(TAG, &quot;Aspectj After execution SayHelloWord&quot;);
+    }
+
+    public static AspecjExample aspectOf() {
+        return instance;
+    }
+}
+</code></pre>
+<p>输入结果为：
+<img src="/images/aspectj_example_output.png" alt="img"></p>
+<h2 id="如何实现对网络请求api的监听">如何实现对网络请求API的监听<a class="anchor" href="#如何实现对网络请求api的监听">#</a></h2>
+<h4 id="监听urlconnection">监听URLConnection:</h4>
+<pre><code>@Around(&quot;call(* java.net.URL+.openConnection(..))&quot;)
+public Object onHttpURLOpenConnect(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 建立Http连接，并获取主机IP和DNS时间
+}
+
+@Around(&quot;call(* java.net.URLConnection+.getInputStream(..))&quot;)
+public Object onHttpURLConnectInput(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 获取InputSteam，创建该InputSteam的代理，并且将代理作为结果返回
+}
+</code></pre>
+<h4 id="监听okhttp">监听OkHttp:</h4>
+<pre><code>@Around(&quot;call(* okhttp3.Dns+.lookup(..))&quot;)
+public Object onOkHttp3DnsLookup(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 获取Host IP和DNS时间
+}
+
+@Around(&quot;call(* java.net.InetSocketAddress+.createUnresolved(..))&quot;)
+public Object onSocketAddressResolve(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 获取Host IP和DNS时间
+}
+
+@Around(&quot;call(* okhttp3.Response.Builder+.build(..))&quot;)
+public Object onOkHttp3RespBuild(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 保存Response和ResponseBody
+}
+
+@Around(&quot;call(* okhttp3.ResponseBody+.source(..))&quot;)
+public Object onOkHttp3RespBodySource(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 建立ResponseBody的代理，并把该代理作为结果返回
+}
+</code></pre>
+<h4 id="监听webview">监听WebView</h4>
+<pre><code>@Around(&quot;call(* android.webkit.WebView+.setWebViewClient(..))&quot;)
+public Object onWebViewSetClient(ProceedingJoinPoint joinPoint) throws Throwable {
+    ... // 建立WebViewClient代理，并把带监听功能的代理作为结果返回
+}
+
+@Before(&quot;call(* android.webkit.WebView+.loadUrl(..))&quot;)
+public void onWebViewLoadUrl(JoinPoint joinPoint) {
+    ... // 如果该WebView未设置WebViewClient，就给它设置监听WebViewClient
+}
+</code></pre>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>
