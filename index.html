@@ -168,8 +168,45 @@
           
           
             <article class="post-preview">
+    <a href="https://zhongxuqi.github.io/posts/2022-03-27/">
+        <h2 class="post-title">Eth智能合约签名校验 - 可用于实现多签合约</h2>
+        
+        
+        
+    </a>
+
+    <p class="post-meta">
+        <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on March 27, 2022
+  
+  
+  
+  
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;
+    
+  
+  
+</span>
+
+
+    </p>
+    <div class="post-entry">
+        
+        1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(&lt;input eth node url/&gt;)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print(&#39;address: &#39;, account.address) rawText = &#39;hello&#39; # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print(&#39;message hash: &#39;, signedMessage.messageHash.hex()) # print(signedMessage) print(&#39;v: &#39;, int(signedMessage.v)) print(&#39;r: &#39;, hex(signedMessage.r)) print(&#39;s: &#39;, hex(signedMessage.s)) print(&#39;signature: &#39;, signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3.
+        <a href="https://zhongxuqi.github.io/posts/2022-03-27/" class="post-read-more">[Read More]</a>
+        
+    </div>
+
+    
+
+</article>
+          
+            <article class="post-preview">
     <a href="https://zhongxuqi.github.io/posts/2022-03-15/">
-        <h2 class="post-title">打造以太坊私有链</h2>
+        <h2 class="post-title">打造以太坊私有链，合约的部署与使用</h2>
         
         
         

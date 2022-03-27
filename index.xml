@@ -6,9 +6,18 @@
     <description>Recent content on ZhongXuQi的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Mar 2022 17:33:37 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 27 Mar 2022 08:08:21 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>打造以太坊私有链</title>
+      <title>Eth智能合约签名校验 - 可用于实现多签合约</title>
+      <link>https://zhongxuqi.github.io/posts/2022-03-27/</link>
+      <pubDate>Sun, 27 Mar 2022 08:08:21 +0800</pubDate>
+      
+      <guid>https://zhongxuqi.github.io/posts/2022-03-27/</guid>
+      <description>1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(&amp;lt;input eth node url/&amp;gt;)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print(&amp;#39;address: &amp;#39;, account.address) rawText = &amp;#39;hello&amp;#39; # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print(&amp;#39;message hash: &amp;#39;, signedMessage.messageHash.hex()) # print(signedMessage) print(&amp;#39;v: &amp;#39;, int(signedMessage.v)) print(&amp;#39;r: &amp;#39;, hex(signedMessage.r)) print(&amp;#39;s: &amp;#39;, hex(signedMessage.s)) print(&amp;#39;signature: &amp;#39;, signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3.</description>
+    </item>
+    
+    <item>
+      <title>打造以太坊私有链，合约的部署与使用</title>
       <link>https://zhongxuqi.github.io/posts/2022-03-15/</link>
       <pubDate>Tue, 15 Mar 2022 17:33:37 +0800</pubDate>
       
