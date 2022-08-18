@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>用Hardhat开发智能合约，并发布ERC20 Token | ZhongXuQi的技术博客</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="用Hardhat开发智能合约，并发布ERC20 Token" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
+  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/zhongxuqi.github.io\/blockchain\/2022-08-18\/",
+      "name": "用Hardhat开发智能合约，并发布ERC20 Token",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/">主页</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/blockchain">区块链</a>
+      </li>
+    
+      <li>
+        <a  href="/mobile">移动端开发</a>
+      </li>
+    
+      <li>
+        <a  href="/acm">ACM</a>
+      </li>
+    
+      <li>
+        <a  href="/tools">开发工具</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">用Hardhat开发智能合约，并发布ERC20 Token</h1>
+            <time datetime="2022-08-18 14:25:12 &#43;0800 CST" class="post__date">Aug 18 2022</time> 
+          </header>
+          <article class="post__content">
+              
+<h2 id="1-安装hardhat">1. 安装Hardhat<a class="anchor" href="#1-安装hardhat">#</a></h2>
+<pre><code class="language-bash">npm install --save-dev hardhat
+</code></pre>
+<h2 id="2-初始化hardhat工程">2. 初始化Hardhat工程<a class="anchor" href="#2-初始化hardhat工程">#</a></h2>
+<pre><code class="language-bash">npx hardhat
+</code></pre>
+<h2 id="3-安装官方contract库">3. 安装官方contract库<a class="anchor" href="#3-安装官方contract库">#</a></h2>
+<pre><code class="language-bash">npm install @openzeppelin/contracts
+</code></pre>
+<h2 id="4-完成token智能合约代码">4. 完成Token智能合约代码<a class="anchor" href="#4-完成token智能合约代码">#</a></h2>
+<p>目录<code>contracts/DrawToken.sol</code></p>
+<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
+
+import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;
+import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+contract DrawToken is ERC20, Ownable {
+    constructor() ERC20(&quot;DrawToken&quot;, &quot;DTK&quot;) {}
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+}
+</code></pre>
+<h2 id="5-完成合约部署代码">5. 完成合约部署代码<a class="anchor" href="#5-完成合约部署代码">#</a></h2>
+<p>目录<code>scripts/deploy.ts</code></p>
+<pre><code class="language-js">import { ethers } from &quot;hardhat&quot;;
+
+async function main() {
+  // DrawToken
+  const DrawToken = await ethers.getContractFactory(&quot;DrawToken&quot;);
+  const drawToken = await DrawToken.deploy();
+  await drawToken.deployed();
+  console.log(`drawToken deployed to ${drawToken.address}`);
+}
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main().catch((error) =&gt; {
+  console.error(error);
+  process.exitCode = 1;
+});
+</code></pre>
+<h2 id="6-启动本地私有链">6. 启动本地私有链<a class="anchor" href="#6-启动本地私有链">#</a></h2>
+<pre><code class="language-bash">npx hardhat node
+</code></pre>
+<h2 id="7-部署合约">7. 部署合约<a class="anchor" href="#7-部署合约">#</a></h2>
+<pre><code class="language-bash">npx hardhat run --network localhost scripts/deploy.ts
+</code></pre>
+<p>得到合约地址</p>
+<pre><code class="language-bash">drawToken deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3
+</code></pre>
+<h2 id="8-启动nodejs并初始化环境">8. 启动nodejs，并初始化环境<a class="anchor" href="#8-启动nodejs并初始化环境">#</a></h2>
+<pre><code class="language-shell"># node
+Welcome to Node.js v16.15.1.
+Type &quot;.help&quot; for more information.
+&gt; const { ethers } = require(&quot;ethers&quot;);
+undefined
+&gt; const provider = new ethers.providers.JsonRpcProvider();
+undefined
+&gt; account1 = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',provider)
+Wallet {
+  _isSigner: true,
+  _signingKey: [Function (anonymous)],
+  _mnemonic: [Function (anonymous)],
+  address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  provider: JsonRpcProvider {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 47,
+      [Symbol(trigger_async_id_symbol)]: 5,
+      [Symbol(destroyed)]: [Object]
+    },
+    _maxInternalBlockNumber: -1024,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 0,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 43,
+    _eventLoopCache: { detectNetwork: null, eth_chainId: null },
+    _network: { chainId: 31337, name: 'unknown' }
+  }
+}
+</code></pre>
+<h2 id="9-初始化contract">9. 初始化contract<a class="anchor" href="#9-初始化contract">#</a></h2>
+<pre><code class="language-shell">&gt; abi = [{&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;constructor&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;Approval&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;previousOwner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;newOwner&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;OwnershipTransferred&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;from&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;Transfer&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;allowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;approve&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;account&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;balanceOf&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;decimals&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint8&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint8&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;subtractedValue&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;decreaseAllowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;addedValue&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;increaseAllowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;mint&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;name&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;owner&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;renounceOwnership&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;symbol&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;totalSupply&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;transfer&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;from&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;transferFrom&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;newOwner&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;transferOwnership&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}]
+...
+&gt; contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3',abi,account1)
+...
+</code></pre>
+<p>调用合约基本方法</p>
+<pre><code class="language-shell">&gt; await contract.name()
+'DrawToken'
+&gt; await contract.symbol()
+'DTK'
+</code></pre>
+<h2 id="10-mint出token">10. mint出token<a class="anchor" href="#10-mint出token">#</a></h2>
+<pre><code class="language-shell">&gt; contractWithSigner = contract.connect(account1)
+...
+&gt; contractWithSigner.mint(await account1.getAddress(),100)
+{
+  type: 2,
+  chainId: 31337,
+  nonce: 2,
+  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0xb5f20e1e', _isBigNumber: true },
+  gasPrice: null,
+  gasLimit: BigNumber { _hex: '0x0116e2', _isBigNumber: true },
+  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  data: '0x40c10f19000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000064',
+  accessList: [],
+  hash: '0x3e0a661dc1656fc7d3be8033f2f6fd4ceec8b05ac328c37fb1769d813a1c8524',
+  v: 1,
+  r: '0xff8f32375fcc5fb3d31634a5b604c8bc4d975b1b694611a4323609d990f944b0',
+  s: '0x14a5b08e8afd9686c1c89962f490a82836dd8aa95cd6c9adcb611596cbc46c91',
+  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  confirmations: 0,
+  wait: [Function (anonymous)]
+}
+</code></pre>
+<p>查询是否mint成功</p>
+<pre><code class="language-shell">&gt; balance = await contractWithSigner.balanceOf(await account1.getAddress())
+BigNumber { _hex: '0x64', _isBigNumber: true }
+&gt; balance.toString()
+'100'
+</code></pre>
+<h2 id="11-发送交易">11. 发送交易<a class="anchor" href="#11-发送交易">#</a></h2>
+<pre><code class="language-shell">&gt; account2 = new ethers.Wallet('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',provider)
+...
+&gt; contractWithSigner.transfer(await account2.getAddress(), 50)
+{
+  type: 2,
+  chainId: 31337,
+  nonce: 3,
+  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0xac5e7c24', _isBigNumber: true },
+  gasPrice: null,
+  gasLimit: BigNumber { _hex: '0xcc41', _isBigNumber: true },
+  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  data: '0xa9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000032',
+  accessList: [],
+  hash: '0xe0d69fe8dbffbb507090d6bc62c4f9127d88b9f747c466fd5a8df8cd5e60690c',
+  v: 0,
+  r: '0xed8ebd334cf1996a9e3021866aca03c50bf98ffbbbd4dccb15352baabc0c0b02',
+  s: '0x706acb4a6f768c095d3ac56f51dd2c4502da8236f52c39137891250ddab5de8c',
+  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  confirmations: 0,
+  wait: [Function (anonymous)]
+}
+</code></pre>
+<p>查看交易是否发送成功</p>
+<pre><code class="language-shell">&gt; (await contractWithSigner.balanceOf(await account2.getAddress())).toString()
+'50'
+&gt; (await contractWithSigner.balanceOf(await account1.getAddress())).toString()
+'50'
+</code></pre>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-03-27/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Eth智能合约签名校验 - 可用于实现多签合约</span>
+    </a>
+  
+
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/zhongxuqi"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>
