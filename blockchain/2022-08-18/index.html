@@ -249,7 +249,7 @@ BigNumber { _hex: '0x64', _isBigNumber: true }
 &gt; balance.toString()
 '100'
 </code></pre>
-<h2 id="11-发送交易">11. 发送交易<a class="anchor" href="#11-发送交易">#</a></h2>
+<h2 id="11-发送token">11. 发送Token<a class="anchor" href="#11-发送token">#</a></h2>
 <pre><code class="language-shell">&gt; account2 = new ethers.Wallet('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',provider)
 ...
 &gt; contractWithSigner.transfer(await account2.getAddress(), 50)
@@ -274,7 +274,7 @@ BigNumber { _hex: '0x64', _isBigNumber: true }
   wait: [Function (anonymous)]
 }
 </code></pre>
-<p>查看交易是否发送成功</p>
+<p>查看Token是否发送成功</p>
 <pre><code class="language-shell">&gt; (await contractWithSigner.balanceOf(await account2.getAddress())).toString()
 '50'
 &gt; (await contractWithSigner.balanceOf(await account1.getAddress())).toString()
@@ -294,6 +294,11 @@ BigNumber { _hex: '0x64', _isBigNumber: true }
     </a>
   
 
+  
+    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-08-19/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >用Hardhat开发智能合约，并发布ERC721 NFT</span>
+    </a>
   
 </div>
 
