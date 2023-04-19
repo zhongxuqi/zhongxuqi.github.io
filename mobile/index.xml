@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Mobiles on ZhongXuQi的技术博客</title>
+    <title>Mobiles on Xuqi.Zhong的博客</title>
     <link>https://zhongxuqi.github.io/mobile/</link>
-    <description>Recent content in Mobiles on ZhongXuQi的技术博客</description>
+    <description>Recent content in Mobiles on Xuqi.Zhong的博客</description>
+    <image>
+      <title>Xuqi.Zhong的博客</title>
+      <url>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</url>
+      <link>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <lastBuildDate>Mon, 27 Mar 2017 11:11:12 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/mobile/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>监听Android APP网络请求的一种方法</title>
@@ -20,8 +24,8 @@
 现有Java AOP技术  Apt Aspectj Javassit  它们的区别如下图所示 本文采用Aspectj来实现网络请求监听SDK
 Android Aspectj插件 Android Aspectj Git Repo
 接入步骤如下所示：  关闭Android Intant Run  修改Project的.gradle文件  修改Module的.gradle文件   API Hook语法介绍 常用的annotation有Before、Around、After，分别是在目标函数(需要进行aspectj hook的函数)执行的前、中、后期进行hook。主要的hook方式分为call和execution两种，它们区别如下所示: call
-// &amp;lt;------- before call JoinPoint targetFunc() // &amp;lt;------ around call JoinPoint // &amp;lt;------- after call JoinPoint  exection
-targetFunc() { // &amp;lt;------- before execution JoinPoint .</description>
+// &amp;lt;------- before call JoinPoint targetFunc() // &amp;lt;------ around call JoinPoint // &amp;lt;------- after call JoinPoint exection
+targetFunc() {  // &amp;lt;------- before execution JoinPoint  .</description>
     </item>
     
   </channel>

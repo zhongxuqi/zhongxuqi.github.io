@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Acms on ZhongXuQi的技术博客</title>
+    <title>Acms on Xuqi.Zhong的博客</title>
     <link>https://zhongxuqi.github.io/acm/</link>
-    <description>Recent content in Acms on ZhongXuQi的技术博客</description>
+    <description>Recent content in Acms on Xuqi.Zhong的博客</description>
+    <image>
+      <title>Xuqi.Zhong的博客</title>
+      <url>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</url>
+      <link>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <lastBuildDate>Sun, 26 Mar 2017 15:32:25 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/acm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[ACM] 求数组的最小和分割法的一种O(N*logN)思路</title>
@@ -17,7 +21,7 @@
 example input: N=[2,5,7,4,7,4], M=3
 output 7
 动态规划思路(O(N^M)) 令状态最优函数为f(i,j,k)，含义为从第i个数到第j个放入k个插板的最优解，那个可以得出状态转移公式为
-f(i,j,k) = Min{ Max{ f(i,i,ceil(k/2) - 1), f(i+2,j,floor(k/2)) }, ... , Max{ f(i,i+x,ceil(k/2) - 1), f(i+x+1,j,floor(k/2)) }, ... , Max{ f(i,j-1,ceil(k/2) - 1), f(j,j,floor(k/2)) } }  其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。 从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。
+f(i,j,k) = Min{  Max{  f(i,i,ceil(k/2) - 1),  f(i+2,j,floor(k/2))  },  ...  ,  Max{  f(i,i+x,ceil(k/2) - 1),  f(i+x+1,j,floor(k/2))  },  ...  ,  Max{  f(i,j-1,ceil(k/2) - 1),  f(j,j,floor(k/2))  } } 其中，floor(x)为小于x的最大整数，ceil(x)为大于x的最小整数。 从上可知，状态转移函数的时间复杂度为N，k的取值范围是[1, M]，所以计算复杂度为O(N^M)。
 另类思路(O(N*logN)) 先求出数组的和为sum，因此可知最优方案的取值范围是[sum/(M+1),sum]。 所以可以通过二分法查找最大值，假设初始值为(sum/(M+1) + sum) / 2 = sum * M / (M + 1) / 2。 然后把每次估计出来的最优值代入数组中验证，即从头到尾遍历一次数组，当和快超过估计值的时候，放入一个插板并把累计值置零，重新累加。 依次迭代，最终便可得出最优解。 二分法查找的复杂度为logN，每次遍历的复杂度为O(N) 因此，该方法的复杂度为O(N*logN)</description>
     </item>
     

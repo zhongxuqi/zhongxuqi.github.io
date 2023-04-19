@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Tags on ZhongXuQi的技术博客</title>
+    <title>Tags on Xuqi.Zhong的博客</title>
     <link>https://zhongxuqi.github.io/tags/</link>
-    <description>Recent content in Tags on ZhongXuQi的技术博客</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://zhongxuqi.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <description>Recent content in Tags on Xuqi.Zhong的博客</description>
+    <image>
+      <title>Xuqi.Zhong的博客</title>
+      <url>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</url>
+      <link>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://zhongxuqi.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

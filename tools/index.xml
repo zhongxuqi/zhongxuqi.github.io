@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Tools on ZhongXuQi的技术博客</title>
+    <title>Tools on Xuqi.Zhong的博客</title>
     <link>https://zhongxuqi.github.io/tools/</link>
-    <description>Recent content in Tools on ZhongXuQi的技术博客</description>
+    <description>Recent content in Tools on Xuqi.Zhong的博客</description>
+    <image>
+      <title>Xuqi.Zhong的博客</title>
+      <url>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</url>
+      <link>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <lastBuildDate>Fri, 07 Apr 2017 15:46:39 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/tools/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用docker进行项目开发</title>
@@ -16,8 +20,8 @@
       <description>docker是目前大红大紫的云计算技术，它极大的简化项目的部署并提高计算资源的利用率；同样，它也能用于项目的开发，提高代码的开发效率。
 用docker进行项目开发的优点  不会污染当前环境，包括环境变量和临时文件。 方便得进行第三方库的版本管理，例如可以分别构建go1.7和go1.8的docker image，编译的时候只用切换docker image就可以实现用不同的go版本进行代码编译。 团队合作中，可以方便地保证大家使用的编译环境是一样的，避免了很多不必要的问题。  用docker进行开发的具体实现步骤 以lowtea为例子，介绍如何用docker进行项目开发。
 构建docker image 前端docker image的Dockerfile，构建出前端运行环境image。
-FROM hub.c.163.com/library/node:6.10.0 MAINTAINER zhongxuqi RUN npm install -g bower &amp;amp;&amp;amp; npm install -g gulp &amp;amp;&amp;amp; mkdir /workspace WORKDIR /workspace  后端docker image的Dockerfile，构建出后端运行环境的image。
-FROM hub.c.163.com/library/golang:1.7.4 MAINTAINER zhongxuqi RUN mkdir /golang &amp;amp;&amp;amp; export GOPATH=/golang &amp;amp;&amp;amp; mkdir /workspace WORKDIR /workspace  编写Makefile SHELL=/bin/bash lowtea-frontend: cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve docker-lowtea-frontend: cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve -p http://lowtea-backend:7070 lowtea-backend: cd lowtea &amp;amp;&amp;amp; source env.</description>
+FROMhub.c.163.com/library/node:6.10.0MAINTAINERzhongxuqiRUN npm install -g bower &amp;amp;&amp;amp; npm install -g gulp &amp;amp;&amp;amp; mkdir /workspaceWORKDIR/workspace后端docker image的Dockerfile，构建出后端运行环境的image。
+FROMhub.c.163.com/library/golang:1.7.4MAINTAINERzhongxuqiRUN mkdir /golang &amp;amp;&amp;amp; export GOPATH=/golang &amp;amp;&amp;amp; mkdir /workspaceWORKDIR/workspace编写Makefile SHELL=/bin/bash  lowtea-frontend: 	cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve  docker-lowtea-frontend: 	cd lowtea/front &amp;amp;&amp;amp; npm install &amp;amp;&amp;amp; gulp serve -p http://lowtea-backend:7070  lowtea-backend: 	cd lowtea &amp;amp;&amp;amp; source env.</description>
     </item>
     
   </channel>

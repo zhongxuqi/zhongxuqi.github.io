@@ -1,447 +1,204 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-  <title>打造以太坊私有链，合约的部署与使用 | ZhongXuQi的技术博客</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="打造以太坊私有链，合约的部署与使用" />
-  <meta name="twitter:description" content=""/>
-  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
-  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/zhongxuqi.github.io\/blockchain\/2022-03-15\/",
-      "name": "打造以太坊私有链，合约的部署与使用",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
-</head>
-
-<body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
-
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-      <li>
-        <a  href="/">主页</a>
-      </li>
-    
-      <li>
-        <a  class="active"
-         href="/blockchain">区块链</a>
-      </li>
-    
-      <li>
-        <a  href="/mobile">移动端开发</a>
-      </li>
-    
-      <li>
-        <a  href="/acm">ACM</a>
-      </li>
-    
-      <li>
-        <a  href="/tools">开发工具</a>
-      </li>
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">打造以太坊私有链，合约的部署与使用</h1>
-            <time datetime="2022-03-15 17:33:37 &#43;0800 CST" class="post__date">Mar 15 2022</time> 
-          </header>
-          <article class="post__content">
-              
-<h2 id="1-下载">1. 下载<a class="anchor" href="#1-下载">#</a></h2>
-<pre><code class="language-bash">$ git clone https://github.com/ethereum/go-ethereum.git
-</code></pre>
-<h2 id="2-编译">2. 编译<a class="anchor" href="#2-编译">#</a></h2>
-<pre><code class="language-bash">$ cd go-ethereum
-$ make geth
-</code></pre>
-<p>把<code>./build/bin/geth</code>添加到可执行路径中</p>
-<h2 id="3-配置初始状态">3. 配置初始状态<a class="anchor" href="#3-配置初始状态">#</a></h2>
-<p>保存配置到<code>genesis.json</code>文件</p>
-<pre><code class="language-json">{
-  &quot;config&quot;: {
-    &quot;chainId&quot;: 7777,
-    &quot;homesteadBlock&quot;: 0,
-    &quot;eip150Block&quot;: 0,
-    &quot;eip155Block&quot;: 0,
-    &quot;eip158Block&quot;: 0,
-    &quot;byzantiumBlock&quot;: 0,
-    &quot;constantinopleBlock&quot;: 0,
-    &quot;petersburgBlock&quot;: 0,
-    &quot;ethash&quot;: {}
-  },
-  &quot;difficulty&quot;: &quot;1&quot;,
-  &quot;gasLimit&quot;: &quot;8000000&quot;,
-  &quot;alloc&quot;: {
-    &quot;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&quot;: { &quot;balance&quot;: &quot;300000&quot; },
-    &quot;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&quot;: { &quot;balance&quot;: &quot;400000&quot; }
-  }
-}
-</code></pre>
-<p>执行<code>geth init --datadir data genesis.json</code>，初始化以太坊配置。</p>
-<h2 id="4-运行以太坊节点">4. 运行以太坊节点<a class="anchor" href="#4-运行以太坊节点">#</a></h2>
-<p>执行<code>geth --datadir data --nodiscover --mine console</code>，节点启动。</p>
-<h2 id="5-创建账户">5. 创建账户<a class="anchor" href="#5-创建账户">#</a></h2>
-<p>在以太坊console执行如下命令</p>
-<pre><code class="language-bash">&gt; personal.newAccount()
-Passphrase:
-Repeat passphrase:
-INFO [03-15|17:46:52.995] Your new key was generated               address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
-WARN [03-15|17:46:52.996] Please backup your key file!             path=/Users/xuqizhong/tmp/eth/data/keystore/UTC--2022-03-15T09-46-51.983819000Z--45281eb7bbaa41fef62d40ae881378c14335c1cf
-WARN [03-15|17:46:52.996] Please remember your password!
-&quot;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&quot;
-</code></pre>
-<p>执行如下命令，可以查询有哪些账户</p>
-<pre><code class="language-bash">&gt; personal.listAccounts
-[&quot;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&quot;, &quot;0x96b638097bb4dd40d9bca6f1197b8d24b1705cfa&quot;]
-</code></pre>
-<h2 id="6-挖矿">6. 挖矿<a class="anchor" href="#6-挖矿">#</a></h2>
-<p>执行挖矿命令</p>
-<pre><code class="language-bash">&gt; miner.start()
-</code></pre>
-<p>暂停挖矿命令</p>
-<pre><code class="language-bash">&gt; miner.stop()
-</code></pre>
-<p>查询钱包余额</p>
-<pre><code class="language-bash">&gt; web3.fromWei(eth.getBalance(&quot;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&quot;),&quot;ether&quot;)
-196
-</code></pre>
-<h2 id="7-发送交易">7. 发送交易<a class="anchor" href="#7-发送交易">#</a></h2>
-<p>首先需要解锁账户0</p>
-<pre><code class="language-bash">&gt; personal.unlockAccount(eth.accounts[0])
-Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf
-Passphrase:
-true
-</code></pre>
-<p>发起交易</p>
-<pre><code class="language-bash">&gt; eth.sendTransaction({from:eth.accounts[0],to:eth.accounts[1],value:web3.toWei(10,'ether')})
-INFO [03-15|18:29:11.590] Setting new local account                address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
-INFO [03-15|18:29:11.591] Submitted transaction                    hash=0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=0 recipient=0x96b638097Bb4dD40d9bca6f1197b8d24B1705cfa value=10,000,000,000,000,000,000
-&quot;0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23&quot;
-</code></pre>
-<p>查询账户1的余额</p>
-<pre><code class="language-bash">&gt; web3.fromWei(eth.getBalance(eth.accounts[1]),'ether')
-10
-</code></pre>
-<h2 id="8-编写智能合约">8. 编写智能合约<a class="anchor" href="#8-编写智能合约">#</a></h2>
-<p>实现一个简单的智能合约demo.sol</p>
-<pre><code class="language-solidity">pragma solidity &gt;=0.7.0 &lt;0.9.0;
-
-contract SimpleStorage {
-    uint storedData;
-
-    function set(uint x) public {
-        storedData = x;
-    }
-
-    function get() public view returns (uint) {
-        return storedData;
-    }
-}
-</code></pre>
-<p>编译智能合约</p>
-<pre><code class="language-bash">&gt; solc --optimize --combined-json abi,bin demo.sol
-solc --optimize --combined-json abi,bin demo.sol
-Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing &quot;SPDX-License-Identifier: &lt;SPDX-License&gt;&quot; to each source file. Use &quot;SPDX-License-Identifier: UNLICENSED&quot; for non-open-source code. Please see https://spdx.org for more information.
---&gt; demo.sol
-
-{&quot;contracts&quot;:{&quot;demo.sol:SimpleStorage&quot;:{&quot;abi&quot;:[{&quot;inputs&quot;:[],&quot;name&quot;:&quot;get&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;x&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;set&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}],&quot;bin&quot;:&quot;6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033&quot;}},&quot;version&quot;:&quot;0.8.12+commit.f00d7308.Darwin.appleclang&quot;}
-</code></pre>
-<h2 id="9-部署智能合约">9. 部署智能合约<a class="anchor" href="#9-部署智能合约">#</a></h2>
-<p>解锁账户</p>
-<pre><code class="language-bash">&gt; personal.unlockAccount(&quot;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&quot;)
-Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf
-Passphrase:
-true
-</code></pre>
-<p>通过web3.eth.contract的new方法发起部署合约的交易</p>
-<pre><code class="language-bash">&gt; var storageContractJson = {&quot;contracts&quot;:{&quot;demo.sol:SimpleStorage&quot;:{&quot;abi&quot;:[{&quot;inputs&quot;:[],&quot;name&quot;:&quot;get&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;x&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;set&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}],&quot;bin&quot;:&quot;6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033&quot;}},&quot;version&quot;:&quot;0.8.12+commit.f00d7308.Darwin.appleclang&quot;}
-undefined
-&gt; var storageContract = eth.contract(storageContractJson.contracts[&quot;demo.sol:SimpleStorage&quot;].abi)
-undefined
-&gt; var storageContractObj = {from:eth.accounts[0],data:&quot;0x&quot;+storageContractJson.contracts[&quot;demo.sol:SimpleStorage&quot;].bin,gas:1000000}
-undefined
-&gt; &gt; var storageContractIns = storageContract.new(storageContractObj)
-INFO [03-16|11:37:55.925] Setting new local account                address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
-INFO [03-16|11:37:55.926] Submitted contract creation              hash=0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=1 contract=0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value=0
-undefined
-</code></pre>
-<p>查看交易池状态</p>
-<pre><code class="language-bash">&gt; txpool.status
-{
-  pending: 1,
-  queued: 0
-}
-&gt; txpool.inspect.pending
-{
-  0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf: {
-    1: &quot;contract creation: 0 wei + 1000000 gas × 1000000000 wei&quot;
-  }
-}
-</code></pre>
-<p>可以看到有一个交易待处理，开始挖矿</p>
-<pre><code class="language-bash">&gt; miner.start(1);admin.sleepBlocks(1);miner.stop();
-INFO [03-16|11:40:45.910] Updated mining threads                   threads=1
-INFO [03-16|11:40:49.606] Successfully sealed new block            number=104 sealhash=b80b30..539c7f hash=8fe8f6..e601c7 elapsed=2m50.695s
-INFO [03-16|11:40:49.606] 🔨 mined potential block                  number=104 hash=8fe8f6..e601c7
-INFO [03-16|11:40:49.607] Commit new sealing work                  number=105 sealhash=d85721..564878 uncles=0 txs=0 gas=0       fees=0           elapsed=&quot;126.458µs&quot;
-INFO [03-16|11:40:49.607] Commit new sealing work                  number=105 sealhash=d85721..564878 uncles=0 txs=0 gas=0       fees=0           elapsed=&quot;245.25µs&quot;
-null
-&gt; txpool.status
-{
-  pending: 0,
-  queued: 0
-}
-</code></pre>
-<p>查看合约地址</p>
-<pre><code class="language-bash">&gt; storageContractIns
-{
-  abi: [{
-      inputs: [],
-      name: &quot;get&quot;,
-      outputs: [{...}],
-      stateMutability: &quot;view&quot;,
-      type: &quot;function&quot;
-  }, {
-      inputs: [{...}],
-      name: &quot;set&quot;,
-      outputs: [],
-      stateMutability: &quot;nonpayable&quot;,
-      type: &quot;function&quot;
-  }],
-  address: &quot;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&quot;,
-  transactionHash: &quot;0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957&quot;,
-  allEvents: function bound(),
-  get: function bound(),
-  set: function bound()
-}
-</code></pre>
-<p>查看部署合约交易详情</p>
-<pre><code class="language-bash">&gt; eth.getTransactionReceipt(storageContractIns.transactionHash)
-{
-  blockHash: &quot;0x8fe8f6dc26b38c87287de5fab28b1b3983dd7b2b47ebb59eb69f60c8b4e601c7&quot;,
-  blockNumber: 104,
-  contractAddress: &quot;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&quot;,
-  cumulativeGasUsed: 100327,
-  effectiveGasPrice: 1000000000,
-  from: &quot;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&quot;,
-  gasUsed: 100327,
-  logs: [],
-  logsBloom: &quot;0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;,
-  status: &quot;0x1&quot;,
-  to: null,
-  transactionHash: &quot;0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957&quot;,
-  transactionIndex: 0,
-  type: &quot;0x0&quot;
-}
-</code></pre>
-<p>获取合约地址</p>
-<pre><code class="language-bash">&gt; var storageContractInsAddress = eth.getTransactionReceipt(storageContractIns.transactionHash).contractAddress
-undefined
-&gt; storageContractInsAddress
-&quot;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&quot;
-</code></pre>
-<p>获取合约实例</p>
-<pre><code class="language-bash">&gt; var storageContractIns = storageContract.at(storageContractInsAddress)
-undefined
-&gt; storageContractIns
-{
-  abi: [{
-      inputs: [],
-      name: &quot;get&quot;,
-      outputs: [{...}],
-      stateMutability: &quot;view&quot;,
-      type: &quot;function&quot;
-  }, {
-      inputs: [{...}],
-      name: &quot;set&quot;,
-      outputs: [],
-      stateMutability: &quot;nonpayable&quot;,
-      type: &quot;function&quot;
-  }],
-  address: &quot;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&quot;,
-  transactionHash: null,
-  allEvents: function bound(),
-  get: function bound(),
-  set: function bound()
-}
-</code></pre>
-<p>调用合约get方法</p>
-<pre><code class="language-bash">&gt; storageContractIns.get.call()
-0
-</code></pre>
-<p>调用合约set方法</p>
-<pre><code class="language-bash">&gt; storageContractIns.set.sendTransaction(77,{from:eth.accounts[0],gas:1000000})
-INFO [03-16|11:51:41.077] Submitted transaction                    hash=0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=2 recipient=0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value=0
-&quot;0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0&quot;
-&gt; txpool.status
-{
-  pending: 1,
-  queued: 0
-}
-&gt; miner.start(1);admin.sleepBlocks(1);miner.stop();
-INFO [03-16|11:52:18.540] Updated mining threads                   threads=1
-INFO [03-16|11:52:18.540] Transaction pool price threshold updated price=1,000,000,000
-INFO [03-16|11:52:18.540] Commit new sealing work                  number=105 sealhash=67a38b..47fa30 uncles=0 txs=0 gas=0       fees=0           elapsed=&quot;265.708µs&quot;
-INFO [03-16|11:52:18.541] Commit new sealing work                  number=105 sealhash=e82e4a..e120c7 uncles=0 txs=1 gas=41654   fees=4.1654e-05  elapsed=&quot;688.625µs&quot;
-INFO [03-16|11:52:20.048] Successfully sealed new block            number=105 sealhash=e82e4a..e120c7 hash=5300e6..eced57 elapsed=1.507s
-INFO [03-16|11:52:20.048] 🔨 mined potential block                  number=105 hash=5300e6..eced57
-INFO [03-16|11:52:20.048] Commit new sealing work                  number=106 sealhash=cf5725..46077d uncles=0 txs=0 gas=0       fees=0           elapsed=&quot;76.375µs&quot;
-INFO [03-16|11:52:20.048] Commit new sealing work                  number=106 sealhash=cf5725..46077d uncles=0 txs=0 gas=0       fees=0           elapsed=&quot;126.084µs&quot;
-null
-&gt; txpool.status
-{
-  pending: 0,
-  queued: 0
-}
-</code></pre>
-<p>获取存储结果</p>
-<pre><code class="language-bash">&gt; storageContractIns.get.call()
-77
-</code></pre>
-
-
-              
-          </article>
-          
-
- <div class="pagination">
-  
-
-  
-    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-03-27/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >Eth智能合约签名校验 - 可用于实现多签合约</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="Twitter"
-        href="https://twitter.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
-      </a>
-    
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="GitHub"
-        href="https://github.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
-      </a>
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
-
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>打造以太坊私有链，合约的部署与使用 | Xuqi.Zhong的博客</title><meta name=keywords content><meta name=description content="1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中
+3. 配置初始状态 保存配置到genesis.json文件
+{  &#34;config&#34;: {  &#34;chainId&#34;: 7777,  &#34;homesteadBlock&#34;: 0,  &#34;eip150Block&#34;: 0,  &#34;eip155Block&#34;: 0,  &#34;eip158Block&#34;: 0,  &#34;byzantiumBlock&#34;: 0,  &#34;constantinopleBlock&#34;: 0,  &#34;petersburgBlock&#34;: 0,  &#34;ethash&#34;: {}  },  &#34;difficulty&#34;: &#34;1&#34;,  &#34;gasLimit&#34;: &#34;8000000&#34;,  &#34;alloc&#34;: {  &#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&#34;: { &#34;balance&#34;: &#34;300000&#34; },  &#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&#34;: { &#34;balance&#34;: &#34;400000&#34; }  } } 执行geth init --datadir data genesis."><meta name=author content="Xuqi.Zhong"><link rel=canonical href=https://zhongxuqi.github.io/blockchain/2022-03-15/><meta name=google-site-verification content="XYZabc"><meta name=yandex-verification content="XYZabc"><meta name=msvalidate.01 content="XYZabc"><link crossorigin=anonymous href=/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe+FVUFzPh7U=" rel="preload stylesheet" as=style><script defer crossorigin=anonymous src=/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG+9vmJ0cTS+ovo0FeA=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><meta property="og:title" content="打造以太坊私有链，合约的部署与使用"><meta property="og:description" content="1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中
+3. 配置初始状态 保存配置到genesis.json文件
+{  &#34;config&#34;: {  &#34;chainId&#34;: 7777,  &#34;homesteadBlock&#34;: 0,  &#34;eip150Block&#34;: 0,  &#34;eip155Block&#34;: 0,  &#34;eip158Block&#34;: 0,  &#34;byzantiumBlock&#34;: 0,  &#34;constantinopleBlock&#34;: 0,  &#34;petersburgBlock&#34;: 0,  &#34;ethash&#34;: {}  },  &#34;difficulty&#34;: &#34;1&#34;,  &#34;gasLimit&#34;: &#34;8000000&#34;,  &#34;alloc&#34;: {  &#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&#34;: { &#34;balance&#34;: &#34;300000&#34; },  &#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&#34;: { &#34;balance&#34;: &#34;400000&#34; }  } } 执行geth init --datadir data genesis."><meta property="og:type" content="article"><meta property="og:url" content="https://zhongxuqi.github.io/blockchain/2022-03-15/"><meta property="og:image" content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta property="article:section" content="blockchain"><meta property="article:published_time" content="2022-03-15T17:33:37+08:00"><meta property="article:modified_time" content="2022-03-15T17:33:37+08:00"><meta property="og:site_name" content="Xuqi.Zhong的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta name=twitter:title content="打造以太坊私有链，合约的部署与使用"><meta name=twitter:description content="1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中
+3. 配置初始状态 保存配置到genesis.json文件
+{  &#34;config&#34;: {  &#34;chainId&#34;: 7777,  &#34;homesteadBlock&#34;: 0,  &#34;eip150Block&#34;: 0,  &#34;eip155Block&#34;: 0,  &#34;eip158Block&#34;: 0,  &#34;byzantiumBlock&#34;: 0,  &#34;constantinopleBlock&#34;: 0,  &#34;petersburgBlock&#34;: 0,  &#34;ethash&#34;: {}  },  &#34;difficulty&#34;: &#34;1&#34;,  &#34;gasLimit&#34;: &#34;8000000&#34;,  &#34;alloc&#34;: {  &#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&#34;: { &#34;balance&#34;: &#34;300000&#34; },  &#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&#34;: { &#34;balance&#34;: &#34;400000&#34; }  } } 执行geth init --datadir data genesis."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blockchains","item":"https://zhongxuqi.github.io/blockchain/"},{"@type":"ListItem","position":2,"name":"打造以太坊私有链，合约的部署与使用","item":"https://zhongxuqi.github.io/blockchain/2022-03-15/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"打造以太坊私有链，合约的部署与使用","name":"打造以太坊私有链，合约的部署与使用","description":"1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中\n3. 配置初始状态 保存配置到genesis.json文件\n{  \u0026#34;config\u0026#34;: {  \u0026#34;chainId\u0026#34;: 7777,  \u0026#34;homesteadBlock\u0026#34;: 0,  \u0026#34;eip150Block\u0026#34;: 0,  \u0026#34;eip155Block\u0026#34;: 0,  \u0026#34;eip158Block\u0026#34;: 0,  \u0026#34;byzantiumBlock\u0026#34;: 0,  \u0026#34;constantinopleBlock\u0026#34;: 0,  \u0026#34;petersburgBlock\u0026#34;: 0,  \u0026#34;ethash\u0026#34;: {}  },  \u0026#34;difficulty\u0026#34;: \u0026#34;1\u0026#34;,  \u0026#34;gasLimit\u0026#34;: \u0026#34;8000000\u0026#34;,  \u0026#34;alloc\u0026#34;: {  \u0026#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82\u0026#34;: { \u0026#34;balance\u0026#34;: \u0026#34;300000\u0026#34; },  \u0026#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde\u0026#34;: { \u0026#34;balance\u0026#34;: \u0026#34;400000\u0026#34; }  } } 执行geth init --datadir data genesis.","keywords":[],"articleBody":"1. 下载 $ git clone https://github.com/ethereum/go-ethereum.git 2. 编译 $ cd go-ethereum $ make geth 把./build/bin/geth添加到可执行路径中\n3. 配置初始状态 保存配置到genesis.json文件\n{  \"config\": {  \"chainId\": 7777,  \"homesteadBlock\": 0,  \"eip150Block\": 0,  \"eip155Block\": 0,  \"eip158Block\": 0,  \"byzantiumBlock\": 0,  \"constantinopleBlock\": 0,  \"petersburgBlock\": 0,  \"ethash\": {}  },  \"difficulty\": \"1\",  \"gasLimit\": \"8000000\",  \"alloc\": {  \"7df9a875a174b3bc565e6424a0050ebc1b2d1d82\": { \"balance\": \"300000\" },  \"f41c74c9ae680c1aa78f42e5647a62f353b7bdde\": { \"balance\": \"400000\" }  } } 执行geth init --datadir data genesis.json，初始化以太坊配置。\n4. 运行以太坊节点 执行geth --datadir data --nodiscover --mine console，节点启动。\n5. 创建账户 在以太坊console执行如下命令\n personal.newAccount() Passphrase: Repeat passphrase: INFO [03-15|17:46:52.995] Your new key was generated address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf WARN [03-15|17:46:52.996] Please backup your key file! path=/Users/xuqizhong/tmp/eth/data/keystore/UTC--2022-03-15T09-46-51.983819000Z--45281eb7bbaa41fef62d40ae881378c14335c1cf WARN [03-15|17:46:52.996] Please remember your password! \"0x45281eb7bbaa41fef62d40ae881378c14335c1cf\" 执行如下命令，可以查询有哪些账户\n personal.listAccounts [\"0x45281eb7bbaa41fef62d40ae881378c14335c1cf\", \"0x96b638097bb4dd40d9bca6f1197b8d24b1705cfa\"] 6. 挖矿 执行挖矿命令\n miner.start() 暂停挖矿命令\n miner.stop() 查询钱包余额\n web3.fromWei(eth.getBalance(\"0x45281eb7bbaa41fef62d40ae881378c14335c1cf\"),\"ether\") 196 7. 发送交易 首先需要解锁账户0\n personal.unlockAccount(eth.accounts[0]) Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf Passphrase: true 发起交易\n eth.sendTransaction({from:eth.accounts[0],to:eth.accounts[1],value:web3.toWei(10,'ether')}) INFO [03-15|18:29:11.590] Setting new local account address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf INFO [03-15|18:29:11.591] Submitted transaction hash=0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=0 recipient=0x96b638097Bb4dD40d9bca6f1197b8d24B1705cfa value=10,000,000,000,000,000,000 \"0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23\" 查询账户1的余额\n web3.fromWei(eth.getBalance(eth.accounts[1]),'ether') 10 8. 编写智能合约 实现一个简单的智能合约demo.sol\npragma solidity =0.7.0 0.9.0;  contract SimpleStorage {  uint storedData;   function set(uint x) public {  storedData = x;  }   function get() public view returns (uint) {  return storedData;  } } 编译智能合约\n solc --optimize --combined-json abi,bin demo.sol solc --optimize --combined-json abi,bin demo.sol Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing \"SPDX-License-Identifier: \" to each source file. Use \"SPDX-License-Identifier: UNLICENSED\" for non-open-source code. Please see https://spdx.org for more information. -- demo.sol  {\"contracts\":{\"demo.sol:SimpleStorage\":{\"abi\":[{\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"bin\":\"6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033\"}},\"version\":\"0.8.12+commit.f00d7308.Darwin.appleclang\"} 9. 部署智能合约 解锁账户\n personal.unlockAccount(\"0x45281eb7bbaa41fef62d40ae881378c14335c1cf\") Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf Passphrase: true 通过web3.eth.contract的new方法发起部署合约的交易\n var storageContractJson = {\"contracts\":{\"demo.sol:SimpleStorage\":{\"abi\":[{\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"bin\":\"6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033\"}},\"version\":\"0.8.12+commit.f00d7308.Darwin.appleclang\"} undefined  var storageContract = eth.contract(storageContractJson.contracts[\"demo.sol:SimpleStorage\"].abi) undefined  var storageContractObj = {from:eth.accounts[0],data:\"0x\"+storageContractJson.contracts[\"demo.sol:SimpleStorage\"].bin,gas:1000000} undefined   var storageContractIns = storageContract.new(storageContractObj) INFO [03-16|11:37:55.925] Setting new local account address=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf INFO [03-16|11:37:55.926] Submitted contract creation hash=0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=1 contract=0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value=0 undefined 查看交易池状态\n txpool.status {  pending: 1,  queued: 0 }  txpool.inspect.pending {  0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf: {  1: \"contract creation: 0 wei + 1000000 gas × 1000000000 wei\"  } } 可以看到有一个交易待处理，开始挖矿\n miner.start(1);admin.sleepBlocks(1);miner.stop(); INFO [03-16|11:40:45.910] Updated mining threads threads=1 INFO [03-16|11:40:49.606] Successfully sealed new block number=104 sealhash=b80b30..539c7f hash=8fe8f6..e601c7 elapsed=2m50.695s INFO [03-16|11:40:49.606] 🔨 mined potential block number=104 hash=8fe8f6..e601c7 INFO [03-16|11:40:49.607] Commit new sealing work number=105 sealhash=d85721..564878 uncles=0 txs=0 gas=0 fees=0 elapsed=\"126.458µs\" INFO [03-16|11:40:49.607] Commit new sealing work number=105 sealhash=d85721..564878 uncles=0 txs=0 gas=0 fees=0 elapsed=\"245.25µs\" null  txpool.status {  pending: 0,  queued: 0 } 查看合约地址\n storageContractIns {  abi: [{  inputs: [],  name: \"get\",  outputs: [{...}],  stateMutability: \"view\",  type: \"function\"  }, {  inputs: [{...}],  name: \"set\",  outputs: [],  stateMutability: \"nonpayable\",  type: \"function\"  }],  address: \"0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3\",  transactionHash: \"0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957\",  allEvents: function bound(),  get: function bound(),  set: function bound() } 查看部署合约交易详情\n eth.getTransactionReceipt(storageContractIns.transactionHash) {  blockHash: \"0x8fe8f6dc26b38c87287de5fab28b1b3983dd7b2b47ebb59eb69f60c8b4e601c7\",  blockNumber: 104,  contractAddress: \"0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3\",  cumulativeGasUsed: 100327,  effectiveGasPrice: 1000000000,  from: \"0x45281eb7bbaa41fef62d40ae881378c14335c1cf\",  gasUsed: 100327,  logs: [],  logsBloom: \"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\",  status: \"0x1\",  to: null,  transactionHash: \"0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957\",  transactionIndex: 0,  type: \"0x0\" } 获取合约地址\n var storageContractInsAddress = eth.getTransactionReceipt(storageContractIns.transactionHash).contractAddress undefined  storageContractInsAddress \"0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3\" 获取合约实例\n var storageContractIns = storageContract.at(storageContractInsAddress) undefined  storageContractIns {  abi: [{  inputs: [],  name: \"get\",  outputs: [{...}],  stateMutability: \"view\",  type: \"function\"  }, {  inputs: [{...}],  name: \"set\",  outputs: [],  stateMutability: \"nonpayable\",  type: \"function\"  }],  address: \"0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3\",  transactionHash: null,  allEvents: function bound(),  get: function bound(),  set: function bound() } 调用合约get方法\n storageContractIns.get.call() 0 调用合约set方法\n storageContractIns.set.sendTransaction(77,{from:eth.accounts[0],gas:1000000}) INFO [03-16|11:51:41.077] Submitted transaction hash=0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0 from=0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce=2 recipient=0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value=0 \"0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0\"  txpool.status {  pending: 1,  queued: 0 }  miner.start(1);admin.sleepBlocks(1);miner.stop(); INFO [03-16|11:52:18.540] Updated mining threads threads=1 INFO [03-16|11:52:18.540] Transaction pool price threshold updated price=1,000,000,000 INFO [03-16|11:52:18.540] Commit new sealing work number=105 sealhash=67a38b..47fa30 uncles=0 txs=0 gas=0 fees=0 elapsed=\"265.708µs\" INFO [03-16|11:52:18.541] Commit new sealing work number=105 sealhash=e82e4a..e120c7 uncles=0 txs=1 gas=41654 fees=4.1654e-05 elapsed=\"688.625µs\" INFO [03-16|11:52:20.048] Successfully sealed new block number=105 sealhash=e82e4a..e120c7 hash=5300e6..eced57 elapsed=1.507s INFO [03-16|11:52:20.048] 🔨 mined potential block number=105 hash=5300e6..eced57 INFO [03-16|11:52:20.048] Commit new sealing work number=106 sealhash=cf5725..46077d uncles=0 txs=0 gas=0 fees=0 elapsed=\"76.375µs\" INFO [03-16|11:52:20.048] Commit new sealing work number=106 sealhash=cf5725..46077d uncles=0 txs=0 gas=0 fees=0 elapsed=\"126.084µs\" null  txpool.status {  pending: 0,  queued: 0 } 获取存储结果\n storageContractIns.get.call() 77 ","wordCount":"635","inLanguage":"en","datePublished":"2022-03-15T17:33:37+08:00","dateModified":"2022-03-15T17:33:37+08:00","author":{"@type":"Person","name":"Xuqi.Zhong"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://zhongxuqi.github.io/blockchain/2022-03-15/"},"publisher":{"@type":"Organization","name":"Xuqi.Zhong的博客","logo":{"@type":"ImageObject","url":"https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://zhongxuqi.github.io/ accesskey=h title="Xuqi.Zhong的博客 (Alt + H)"><img src=https://zhongxuqi.github.io/apple-touch-icon.png alt aria-label=logo height=35>Xuqi.Zhong的博客</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://zhongxuqi.github.io/ title=Home><span>Home</span></a></li><li><a href=https://zhongxuqi.github.io/web3 title=Web3><span>Web3</span></a></li><li><a href=https://zhongxuqi.github.io/blockchain title=Blockchain><span>Blockchain</span></a></li><li><a href=https://zhongxuqi.github.io/archives title=Archives><span>Archives</span></a></li><li><a href=https://zhongxuqi.github.io/search title="Search (Alt + /)" accesskey=/><span>Search</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://zhongxuqi.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://zhongxuqi.github.io/blockchain/>Blockchains</a></div><h1 class=post-title>打造以太坊私有链，合约的部署与使用</h1><div class=post-meta><span title="2022-03-15 17:33:37 +0800 CST">2022-03-15</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;635 words&nbsp;·&nbsp;Xuqi.Zhong</div></header><div class=post-content><h2 id=1-下载>1. 下载<a hidden class=anchor aria-hidden=true href=#1-下载>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ git clone https://github.com/ethereum/go-ethereum.git
+</span></span></code></pre></div><h2 id=2-编译>2. 编译<a hidden class=anchor aria-hidden=true href=#2-编译>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ cd go-ethereum
+</span></span><span style=display:flex><span>$ make geth
+</span></span></code></pre></div><p>把<code>./build/bin/geth</code>添加到可执行路径中</p><h2 id=3-配置初始状态>3. 配置初始状态<a hidden class=anchor aria-hidden=true href=#3-配置初始状态>#</a></h2><p>保存配置到<code>genesis.json</code>文件</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;config&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;chainId&#34;</span>: <span style=color:#ae81ff>7777</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;homesteadBlock&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;eip150Block&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;eip155Block&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;eip158Block&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;byzantiumBlock&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;constantinopleBlock&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;petersburgBlock&#34;</span>: <span style=color:#ae81ff>0</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;ethash&#34;</span>: {}
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;difficulty&#34;</span>: <span style=color:#e6db74>&#34;1&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;gasLimit&#34;</span>: <span style=color:#e6db74>&#34;8000000&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;alloc&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;7df9a875a174b3bc565e6424a0050ebc1b2d1d82&#34;</span>: { <span style=color:#f92672>&#34;balance&#34;</span>: <span style=color:#e6db74>&#34;300000&#34;</span> },
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;f41c74c9ae680c1aa78f42e5647a62f353b7bdde&#34;</span>: { <span style=color:#f92672>&#34;balance&#34;</span>: <span style=color:#e6db74>&#34;400000&#34;</span> }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>执行<code>geth init --datadir data genesis.json</code>，初始化以太坊配置。</p><h2 id=4-运行以太坊节点>4. 运行以太坊节点<a hidden class=anchor aria-hidden=true href=#4-运行以太坊节点>#</a></h2><p>执行<code>geth --datadir data --nodiscover --mine console</code>，节点启动。</p><h2 id=5-创建账户>5. 创建账户<a hidden class=anchor aria-hidden=true href=#5-创建账户>#</a></h2><p>在以太坊console执行如下命令</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; personal.newAccount<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span>Passphrase:
+</span></span><span style=display:flex><span>Repeat passphrase:
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-15|17:46:52.995<span style=color:#f92672>]</span> Your new key was generated               address<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
+</span></span><span style=display:flex><span>WARN <span style=color:#f92672>[</span>03-15|17:46:52.996<span style=color:#f92672>]</span> Please backup your key file!             path<span style=color:#f92672>=</span>/Users/xuqizhong/tmp/eth/data/keystore/UTC--2022-03-15T09-46-51.983819000Z--45281eb7bbaa41fef62d40ae881378c14335c1cf
+</span></span><span style=display:flex><span>WARN <span style=color:#f92672>[</span>03-15|17:46:52.996<span style=color:#f92672>]</span> Please remember your password!
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&#34;</span>
+</span></span></code></pre></div><p>执行如下命令，可以查询有哪些账户</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; personal.listAccounts
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span><span style=color:#e6db74>&#34;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&#34;</span>, <span style=color:#e6db74>&#34;0x96b638097bb4dd40d9bca6f1197b8d24b1705cfa&#34;</span><span style=color:#f92672>]</span>
+</span></span></code></pre></div><h2 id=6-挖矿>6. 挖矿<a hidden class=anchor aria-hidden=true href=#6-挖矿>#</a></h2><p>执行挖矿命令</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; miner.start<span style=color:#f92672>()</span>
+</span></span></code></pre></div><p>暂停挖矿命令</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; miner.stop<span style=color:#f92672>()</span>
+</span></span></code></pre></div><p>查询钱包余额</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; web3.fromWei<span style=color:#f92672>(</span>eth.getBalance<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&#34;</span><span style=color:#f92672>)</span>,<span style=color:#e6db74>&#34;ether&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>196</span>
+</span></span></code></pre></div><h2 id=7-发送交易>7. 发送交易<a hidden class=anchor aria-hidden=true href=#7-发送交易>#</a></h2><p>首先需要解锁账户0</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; personal.unlockAccount<span style=color:#f92672>(</span>eth.accounts<span style=color:#f92672>[</span>0<span style=color:#f92672>])</span>
+</span></span><span style=display:flex><span>Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf
+</span></span><span style=display:flex><span>Passphrase:
+</span></span><span style=display:flex><span>true
+</span></span></code></pre></div><p>发起交易</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; eth.sendTransaction<span style=color:#f92672>({</span>from:eth.accounts<span style=color:#f92672>[</span>0<span style=color:#f92672>]</span>,to:eth.accounts<span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>,value:web3.toWei<span style=color:#f92672>(</span>10,<span style=color:#e6db74>&#39;ether&#39;</span><span style=color:#f92672>)})</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-15|18:29:11.590<span style=color:#f92672>]</span> Setting new local account                address<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-15|18:29:11.591<span style=color:#f92672>]</span> Submitted transaction                    hash<span style=color:#f92672>=</span>0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23 from<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> recipient<span style=color:#f92672>=</span>0x96b638097Bb4dD40d9bca6f1197b8d24B1705cfa value<span style=color:#f92672>=</span>10,000,000,000,000,000,000
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;0xef11db5b652c6402a2569843c7b364cda8628e84f86efe51d5b5b674cf6caa23&#34;</span>
+</span></span></code></pre></div><p>查询账户1的余额</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; web3.fromWei<span style=color:#f92672>(</span>eth.getBalance<span style=color:#f92672>(</span>eth.accounts<span style=color:#f92672>[</span>1<span style=color:#f92672>])</span>,<span style=color:#e6db74>&#39;ether&#39;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>10</span>
+</span></span></code></pre></div><h2 id=8-编写智能合约>8. 编写智能合约<a hidden class=anchor aria-hidden=true href=#8-编写智能合约>#</a></h2><p>实现一个简单的智能合约demo.sol</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-solidity data-lang=solidity><span style=display:flex><span><span style=color:#66d9ef>pragma solidity</span> <span style=color:#f92672>&gt;=</span><span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>7</span>.<span style=color:#ae81ff>0</span> <span style=color:#f92672>&lt;</span><span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>9</span>.<span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>contract</span> <span style=color:#a6e22e>SimpleStorage</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint</span> storedData;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>set</span>(<span style=color:#66d9ef>uint</span> x) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>        storedData <span style=color:#f92672>=</span> x;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>get</span>() <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>view</span> <span style=color:#66d9ef>returns</span> (<span style=color:#66d9ef>uint</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> storedData;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>编译智能合约</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; solc --optimize --combined-json abi,bin demo.sol
+</span></span><span style=display:flex><span>solc --optimize --combined-json abi,bin demo.sol
+</span></span><span style=display:flex><span>Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing <span style=color:#e6db74>&#34;SPDX-License-Identifier: &lt;SPDX-License&gt;&#34;</span> to each source file. Use <span style=color:#e6db74>&#34;SPDX-License-Identifier: UNLICENSED&#34;</span> <span style=color:#66d9ef>for</span> non-open-source code. Please see https://spdx.org <span style=color:#66d9ef>for</span> more information.
+</span></span><span style=display:flex><span>--&gt; demo.sol
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span><span style=color:#e6db74>&#34;contracts&#34;</span>:<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;demo.sol:SimpleStorage&#34;</span>:<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;abi&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;get&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;x&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;set&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;bin&#34;</span>:<span style=color:#e6db74>&#34;6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033&#34;</span><span style=color:#f92672>}}</span>,<span style=color:#e6db74>&#34;version&#34;</span>:<span style=color:#e6db74>&#34;0.8.12+commit.f00d7308.Darwin.appleclang&#34;</span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><h2 id=9-部署智能合约>9. 部署智能合约<a hidden class=anchor aria-hidden=true href=#9-部署智能合约>#</a></h2><p>解锁账户</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; personal.unlockAccount<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Unlock account 0x45281eb7bbaa41fef62d40ae881378c14335c1cf
+</span></span><span style=display:flex><span>Passphrase:
+</span></span><span style=display:flex><span>true
+</span></span></code></pre></div><p>通过web3.eth.contract的new方法发起部署合约的交易</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; var storageContractJson <span style=color:#f92672>=</span> <span style=color:#f92672>{</span><span style=color:#e6db74>&#34;contracts&#34;</span>:<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;demo.sol:SimpleStorage&#34;</span>:<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;abi&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;get&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;x&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;set&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;bin&#34;</span>:<span style=color:#e6db74>&#34;6080604052348015600f57600080fd5b5060ac8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806360fe47b11460375780636d4ce63c146049575b600080fd5b60476042366004605e565b600055565b005b60005460405190815260200160405180910390f35b600060208284031215606f57600080fd5b503591905056fea264697066735822122026c14d5b811591c48b9fef3864b4577cbbc2ebd0e5ebc07b7d54847f206eb69564736f6c634300080c0033&#34;</span><span style=color:#f92672>}}</span>,<span style=color:#e6db74>&#34;version&#34;</span>:<span style=color:#e6db74>&#34;0.8.12+commit.f00d7308.Darwin.appleclang&#34;</span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; var storageContract <span style=color:#f92672>=</span> eth.contract<span style=color:#f92672>(</span>storageContractJson.contracts<span style=color:#f92672>[</span><span style=color:#e6db74>&#34;demo.sol:SimpleStorage&#34;</span><span style=color:#f92672>]</span>.abi<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; var storageContractObj <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>from:eth.accounts<span style=color:#f92672>[</span>0<span style=color:#f92672>]</span>,data:<span style=color:#e6db74>&#34;0x&#34;</span>+storageContractJson.contracts<span style=color:#f92672>[</span><span style=color:#e6db74>&#34;demo.sol:SimpleStorage&#34;</span><span style=color:#f92672>]</span>.bin,gas:1000000<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; &gt; var storageContractIns <span style=color:#f92672>=</span> storageContract.new<span style=color:#f92672>(</span>storageContractObj<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:37:55.925<span style=color:#f92672>]</span> Setting new local account                address<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:37:55.926<span style=color:#f92672>]</span> Submitted contract creation              hash<span style=color:#f92672>=</span>0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957 from<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> contract<span style=color:#f92672>=</span>0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>undefined
+</span></span></code></pre></div><p>查看交易池状态</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; txpool.status
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  pending: 1,
+</span></span><span style=display:flex><span>  queued: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>&gt; txpool.inspect.pending
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf: <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    1: <span style=color:#e6db74>&#34;contract creation: 0 wei + 1000000 gas × 1000000000 wei&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>可以看到有一个交易待处理，开始挖矿</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; miner.start<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>;admin.sleepBlocks<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>;miner.stop<span style=color:#f92672>()</span>;
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:40:45.910<span style=color:#f92672>]</span> Updated mining threads                   threads<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:40:49.606<span style=color:#f92672>]</span> Successfully sealed new block            number<span style=color:#f92672>=</span><span style=color:#ae81ff>104</span> sealhash<span style=color:#f92672>=</span>b80b30..539c7f hash<span style=color:#f92672>=</span>8fe8f6..e601c7 elapsed<span style=color:#f92672>=</span>2m50.695s
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:40:49.606<span style=color:#f92672>]</span> 🔨 mined potential block                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>104</span> hash<span style=color:#f92672>=</span>8fe8f6..e601c7
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:40:49.607<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> sealhash<span style=color:#f92672>=</span>d85721..564878 uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>       fees<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>           elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;126.458µs&#34;</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:40:49.607<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> sealhash<span style=color:#f92672>=</span>d85721..564878 uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>       fees<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>           elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;245.25µs&#34;</span>
+</span></span><span style=display:flex><span>null
+</span></span><span style=display:flex><span>&gt; txpool.status
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  pending: 0,
+</span></span><span style=display:flex><span>  queued: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>查看合约地址</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; storageContractIns
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  abi: <span style=color:#f92672>[{</span>
+</span></span><span style=display:flex><span>      inputs: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>      name: <span style=color:#e6db74>&#34;get&#34;</span>,
+</span></span><span style=display:flex><span>      outputs: <span style=color:#f92672>[{</span>...<span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>      stateMutability: <span style=color:#e6db74>&#34;view&#34;</span>,
+</span></span><span style=display:flex><span>      type: <span style=color:#e6db74>&#34;function&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}</span>, <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>      inputs: <span style=color:#f92672>[{</span>...<span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>      name: <span style=color:#e6db74>&#34;set&#34;</span>,
+</span></span><span style=display:flex><span>      outputs: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>      stateMutability: <span style=color:#e6db74>&#34;nonpayable&#34;</span>,
+</span></span><span style=display:flex><span>      type: <span style=color:#e6db74>&#34;function&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>  address: <span style=color:#e6db74>&#34;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&#34;</span>,
+</span></span><span style=display:flex><span>  transactionHash: <span style=color:#e6db74>&#34;0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957&#34;</span>,
+</span></span><span style=display:flex><span>  allEvents: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>,
+</span></span><span style=display:flex><span>  get: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>,
+</span></span><span style=display:flex><span>  set: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>查看部署合约交易详情</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; eth.getTransactionReceipt<span style=color:#f92672>(</span>storageContractIns.transactionHash<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  blockHash: <span style=color:#e6db74>&#34;0x8fe8f6dc26b38c87287de5fab28b1b3983dd7b2b47ebb59eb69f60c8b4e601c7&#34;</span>,
+</span></span><span style=display:flex><span>  blockNumber: 104,
+</span></span><span style=display:flex><span>  contractAddress: <span style=color:#e6db74>&#34;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&#34;</span>,
+</span></span><span style=display:flex><span>  cumulativeGasUsed: 100327,
+</span></span><span style=display:flex><span>  effectiveGasPrice: 1000000000,
+</span></span><span style=display:flex><span>  from: <span style=color:#e6db74>&#34;0x45281eb7bbaa41fef62d40ae881378c14335c1cf&#34;</span>,
+</span></span><span style=display:flex><span>  gasUsed: 100327,
+</span></span><span style=display:flex><span>  logs: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>  logsBloom: <span style=color:#e6db74>&#34;0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&#34;</span>,
+</span></span><span style=display:flex><span>  status: <span style=color:#e6db74>&#34;0x1&#34;</span>,
+</span></span><span style=display:flex><span>  to: null,
+</span></span><span style=display:flex><span>  transactionHash: <span style=color:#e6db74>&#34;0xa8c86633956bea5f8532734bd76a3125ee2f81c0ddf5308762651c94c99cd957&#34;</span>,
+</span></span><span style=display:flex><span>  transactionIndex: 0,
+</span></span><span style=display:flex><span>  type: <span style=color:#e6db74>&#34;0x0&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>获取合约地址</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; var storageContractInsAddress <span style=color:#f92672>=</span> eth.getTransactionReceipt<span style=color:#f92672>(</span>storageContractIns.transactionHash<span style=color:#f92672>)</span>.contractAddress
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; storageContractInsAddress
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&#34;</span>
+</span></span></code></pre></div><p>获取合约实例</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; var storageContractIns <span style=color:#f92672>=</span> storageContract.at<span style=color:#f92672>(</span>storageContractInsAddress<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; storageContractIns
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  abi: <span style=color:#f92672>[{</span>
+</span></span><span style=display:flex><span>      inputs: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>      name: <span style=color:#e6db74>&#34;get&#34;</span>,
+</span></span><span style=display:flex><span>      outputs: <span style=color:#f92672>[{</span>...<span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>      stateMutability: <span style=color:#e6db74>&#34;view&#34;</span>,
+</span></span><span style=display:flex><span>      type: <span style=color:#e6db74>&#34;function&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}</span>, <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>      inputs: <span style=color:#f92672>[{</span>...<span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>      name: <span style=color:#e6db74>&#34;set&#34;</span>,
+</span></span><span style=display:flex><span>      outputs: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>      stateMutability: <span style=color:#e6db74>&#34;nonpayable&#34;</span>,
+</span></span><span style=display:flex><span>      type: <span style=color:#e6db74>&#34;function&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}]</span>,
+</span></span><span style=display:flex><span>  address: <span style=color:#e6db74>&#34;0xf00a6aaa995c8adcc7b0a6d2a044827c58b6cdb3&#34;</span>,
+</span></span><span style=display:flex><span>  transactionHash: null,
+</span></span><span style=display:flex><span>  allEvents: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>,
+</span></span><span style=display:flex><span>  get: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>,
+</span></span><span style=display:flex><span>  set: <span style=color:#66d9ef>function</span> bound<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>调用合约get方法</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; storageContractIns.get.call<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>0</span>
+</span></span></code></pre></div><p>调用合约set方法</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; storageContractIns.set.sendTransaction<span style=color:#f92672>(</span>77,<span style=color:#f92672>{</span>from:eth.accounts<span style=color:#f92672>[</span>0<span style=color:#f92672>]</span>,gas:1000000<span style=color:#f92672>})</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:51:41.077<span style=color:#f92672>]</span> Submitted transaction                    hash<span style=color:#f92672>=</span>0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0 from<span style=color:#f92672>=</span>0x45281eb7BBaA41FeF62D40aE881378c14335C1Cf nonce<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> recipient<span style=color:#f92672>=</span>0xf00a6AAA995c8adcC7b0A6d2A044827c58b6cdb3 value<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#34;0xf431e2d1e2dbf042dca26570d213415c2ccf72a0272a89c028db7a802b38a9f0&#34;</span>
+</span></span><span style=display:flex><span>&gt; txpool.status
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  pending: 1,
+</span></span><span style=display:flex><span>  queued: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>&gt; miner.start<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>;admin.sleepBlocks<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>;miner.stop<span style=color:#f92672>()</span>;
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:18.540<span style=color:#f92672>]</span> Updated mining threads                   threads<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:18.540<span style=color:#f92672>]</span> Transaction pool price threshold updated price<span style=color:#f92672>=</span>1,000,000,000
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:18.540<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> sealhash<span style=color:#f92672>=</span>67a38b..47fa30 uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>       fees<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>           elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;265.708µs&#34;</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:18.541<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> sealhash<span style=color:#f92672>=</span>e82e4a..e120c7 uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>41654</span>   fees<span style=color:#f92672>=</span>4.1654e-05  elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;688.625µs&#34;</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:20.048<span style=color:#f92672>]</span> Successfully sealed new block            number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> sealhash<span style=color:#f92672>=</span>e82e4a..e120c7 hash<span style=color:#f92672>=</span>5300e6..eced57 elapsed<span style=color:#f92672>=</span>1.507s
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:20.048<span style=color:#f92672>]</span> 🔨 mined potential block                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>105</span> hash<span style=color:#f92672>=</span>5300e6..eced57
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:20.048<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>106</span> sealhash<span style=color:#f92672>=</span>cf5725..46077d uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>       fees<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>           elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;76.375µs&#34;</span>
+</span></span><span style=display:flex><span>INFO <span style=color:#f92672>[</span>03-16|11:52:20.048<span style=color:#f92672>]</span> Commit new sealing work                  number<span style=color:#f92672>=</span><span style=color:#ae81ff>106</span> sealhash<span style=color:#f92672>=</span>cf5725..46077d uncles<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> txs<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> gas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>       fees<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>           elapsed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;126.084µs&#34;</span>
+</span></span><span style=display:flex><span>null
+</span></span><span style=display:flex><span>&gt; txpool.status
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  pending: 0,
+</span></span><span style=display:flex><span>  queued: <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>获取存储结果</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>&gt; storageContractIns.get.call<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#ae81ff>77</span>
+</span></span></code></pre></div></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://zhongxuqi.github.io/blockchain/2022-03-27/><span class=title>« Prev</span><br><span>Eth智能合约签名校验 - 可用于实现多签合约</span></a></nav><div class=share-buttons><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on twitter" href="https://twitter.com/intent/tweet/?text=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f&hashtags="><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f&title=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8&summary=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8&source=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f&title=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on whatsapp" href="https://api.whatsapp.com/send?text=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8%20-%20https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 打造以太坊私有链，合约的部署与使用 on telegram" href="https://telegram.me/share/url?text=%e6%89%93%e9%80%a0%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%a7%81%e6%9c%89%e9%93%be%ef%bc%8c%e5%90%88%e7%ba%a6%e7%9a%84%e9%83%a8%e7%bd%b2%e4%b8%8e%e4%bd%bf%e7%94%a8&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-15%2f"><svg viewBox="2 2 28 28" height="30" width="30" fill="currentcolor"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg></a></div></footer></article></main><footer class=footer><span>&copy; 2023 <a href=https://zhongxuqi.github.io/>Xuqi.Zhong的博客</a></span>
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(t){t.preventDefault();var e=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView({behavior:"smooth"}),e==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${e}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

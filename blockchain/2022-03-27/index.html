@@ -1,313 +1,95 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-  <title>Eth智能合约签名校验 - 可用于实现多签合约 | ZhongXuQi的技术博客</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Eth智能合约签名校验 - 可用于实现多签合约" />
-  <meta name="twitter:description" content=""/>
-  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
-  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/zhongxuqi.github.io\/blockchain\/2022-03-27\/",
-      "name": "Eth智能合约签名校验 - 可用于实现多签合约",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
-</head>
-
-<body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
-
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-      <li>
-        <a  href="/">主页</a>
-      </li>
-    
-      <li>
-        <a  class="active"
-         href="/blockchain">区块链</a>
-      </li>
-    
-      <li>
-        <a  href="/mobile">移动端开发</a>
-      </li>
-    
-      <li>
-        <a  href="/acm">ACM</a>
-      </li>
-    
-      <li>
-        <a  href="/tools">开发工具</a>
-      </li>
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">Eth智能合约签名校验 - 可用于实现多签合约</h1>
-            <time datetime="2022-03-27 08:08:21 &#43;0800 CST" class="post__date">Mar 27 2022</time> 
-          </header>
-          <article class="post__content">
-              
-<h2 id="1-对message进行签名">1. 对message进行签名<a class="anchor" href="#1-对message进行签名">#</a></h2>
-<pre><code class="language-python">from eth_account.messages import encode_defunct
-from web3 import Web3
-from eth_keys import keys
-
-KEY = ... # 填写账户私钥
-w3 = Web3(Web3.HTTPProvider(&lt;input eth node url/&gt;)) # 请填写以太坊的节点url
-account = w3.eth.account.from_key(KEY)
-print('address: ', account.address)
-rawText = 'hello' # 签名message
-signedMessage = account.sign_message(encode_defunct(text=rawText))
-print('message hash: ', signedMessage.messageHash.hex())
-# print(signedMessage)
-print('v: ', int(signedMessage.v))
-print('r: ', hex(signedMessage.r))
-print('s: ', hex(signedMessage.s))
-print('signature: ', signedMessage.signature.hex())
-print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature))
-</code></pre>
-<h2 id="2-执行脚本得到">2. 执行脚本，得到<a class="anchor" href="#2-执行脚本得到">#</a></h2>
-<pre><code class="language-bash">address:  0x1c74c86906d91766e143e1d009C8604b66001363
-message hash:  0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750
-v:  28
-r:  0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f
-s:  0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd
-signature:  0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c
-0x1c74c86906d91766e143e1d009C8604b66001363
-</code></pre>
-<h2 id="3-智能合约代码">3. 智能合约代码<a class="anchor" href="#3-智能合约代码">#</a></h2>
-<pre><code class="language-solidity">pragma solidity ^0.8.13;
-
-contract VerifySign{
-  //公匙：0x1c74c86906d91766e143e1d009C8604b66001363
-  //sha3(msg): 0x4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45 (web3.sha3(&quot;abc&quot;);)
-  //签名后的数据：0x7eeb34fb6770d2b935de3657652e8060033ec47f57d10acbcc6a4b4d69f82db12d8ddd81e67a01a4a51a0e658760e895bab90a24cc0d7803800098be779ea1d91c
-
-  //将原始数据按段切割出来指定长度
-  function slice(bytes memory data, uint start, uint len) private returns (bytes memory) {
-    bytes memory b = new bytes(len);
-
-    for(uint i = 0; i &lt; len; i++){
-      b[i] = data[i + start];
-    }
-
-    return b;
-  }
-
-  //bytes转换为bytes32
-  function bytesToBytes32(bytes memory source) private returns (bytes32 result) {
-    assembly {
-        result := mload(add(source, 32))
-    }
-  }
-
-    // &quot;\x19Ethereum Signed Message:\n{{len}}&quot;
-  function VerifyMessageV1(bytes32 messageHash, uint8 _v, bytes32 _r, bytes32 _s) public pure returns (address signer) {
-    signer = ecrecover(messageHash, _v, _r, _s);
-  }
-
-  address addr;
-  bytes32 r; bytes32 s; uint8 v;
-  function VerifyMessageV2(bytes32 messageHash, bytes memory signedString) public {
-    r = bytesToBytes32(slice(signedString, 0, 32));
-    s = bytesToBytes32(slice(signedString, 32, 32));
-    v = uint8(slice(signedString, 64, 1)[0]);
-    addr = ecrecover(messageHash, v, r, s);
-  }
-
-  function getSignCheckResult() public view returns (address _addr, bytes32 _r, bytes32 _s, uint8 _v){
-    _addr = addr;
-    _v = v;
-    _r = r;
-    _s = s;
-  }
-}
-</code></pre>
-<h2 id="4-部署智能合约到remix">4. 部署智能合约到remix<a class="anchor" href="#4-部署智能合约到remix">#</a></h2>
-<p><a href="https://remix.ethereum.org/" 
-  
-   target="_blank" rel="noreferrer noopener" 
->https://remix.ethereum.org/</a></p>
-<h2 id="5-执行verifymessagev1函数">5. 执行VerifyMessageV1函数<a class="anchor" href="#5-执行verifymessagev1函数">#</a></h2>
-<p>输入参数：</p>
-<pre><code class="language-json">{
-    &quot;messageHash&quot;: &quot;0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750&quot;,
-    &quot;signedString&quot;: &quot;28&quot;,
-    &quot;_r&quot;: &quot;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f&quot;,
-    &quot;_s&quot;: &quot;0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd&quot;,
-}
-</code></pre>
-<p>返回结果：</p>
-<pre><code class="language-json">{
-    &quot;signer&quot;: &quot;0x1c74c86906d91766e143e1d009C8604b66001363&quot;,
-}
-</code></pre>
-<p>signer和签名账户的地址一致</p>
-<h2 id="6-执行verifymessagev2函数">6. 执行VerifyMessageV2函数<a class="anchor" href="#6-执行verifymessagev2函数">#</a></h2>
-<p>输入参数：</p>
-<pre><code class="language-json">{
-    &quot;messageHash&quot;: &quot;0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750&quot;,
-    &quot;signedString&quot;: &quot;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c&quot;,
-}
-</code></pre>
-<p>执行getSignCheckResult，返回结果：</p>
-<pre><code class="language-json">{
-    &quot;_addr&quot;: &quot;0x1c74c86906d91766e143e1d009C8604b66001363&quot;,
-    &quot;_r&quot;: &quot;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f&quot;,
-    &quot;_s&quot;: &quot;0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd&quot;,
-    &quot;_v&quot;: &quot;28&quot;,
-}
-</code></pre>
-<p>_addr和签名账户的地址一致</p>
-
-
-              
-          </article>
-          
-
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-03-15/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">打造以太坊私有链，合约的部署与使用</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-08-18/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >用Hardhat开发智能合约，并发布ERC20 Token</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="Twitter"
-        href="https://twitter.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
-      </a>
-    
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="GitHub"
-        href="https://github.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
-      </a>
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
-
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Eth智能合约签名校验 - 可用于实现多签合约 | Xuqi.Zhong的博客</title><meta name=keywords content><meta name=description content="1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(<input eth node url/>)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print('address: ', account.address) rawText = 'hello' # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print('message hash: ', signedMessage.messageHash.hex()) # print(signedMessage) print('v: ', int(signedMessage.v)) print('r: ', hex(signedMessage.r)) print('s: ', hex(signedMessage.s)) print('signature: ', signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3."><meta name=author content="Xuqi.Zhong"><link rel=canonical href=https://zhongxuqi.github.io/blockchain/2022-03-27/><meta name=google-site-verification content="XYZabc"><meta name=yandex-verification content="XYZabc"><meta name=msvalidate.01 content="XYZabc"><link crossorigin=anonymous href=/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe+FVUFzPh7U=" rel="preload stylesheet" as=style><script defer crossorigin=anonymous src=/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG+9vmJ0cTS+ovo0FeA=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><meta property="og:title" content="Eth智能合约签名校验 - 可用于实现多签合约"><meta property="og:description" content="1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(<input eth node url/>)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print('address: ', account.address) rawText = 'hello' # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print('message hash: ', signedMessage.messageHash.hex()) # print(signedMessage) print('v: ', int(signedMessage.v)) print('r: ', hex(signedMessage.r)) print('s: ', hex(signedMessage.s)) print('signature: ', signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3."><meta property="og:type" content="article"><meta property="og:url" content="https://zhongxuqi.github.io/blockchain/2022-03-27/"><meta property="og:image" content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta property="article:section" content="blockchain"><meta property="article:published_time" content="2022-03-27T08:08:21+08:00"><meta property="article:modified_time" content="2022-03-27T08:08:21+08:00"><meta property="og:site_name" content="Xuqi.Zhong的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta name=twitter:title content="Eth智能合约签名校验 - 可用于实现多签合约"><meta name=twitter:description content="1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(<input eth node url/>)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print('address: ', account.address) rawText = 'hello' # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print('message hash: ', signedMessage.messageHash.hex()) # print(signedMessage) print('v: ', int(signedMessage.v)) print('r: ', hex(signedMessage.r)) print('s: ', hex(signedMessage.s)) print('signature: ', signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blockchains","item":"https://zhongxuqi.github.io/blockchain/"},{"@type":"ListItem","position":2,"name":"Eth智能合约签名校验 - 可用于实现多签合约","item":"https://zhongxuqi.github.io/blockchain/2022-03-27/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Eth智能合约签名校验 - 可用于实现多签合约","name":"Eth智能合约签名校验 - 可用于实现多签合约","description":"1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(\u0026lt;input eth node url/\u0026gt;)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print(\u0026#39;address: \u0026#39;, account.address) rawText = \u0026#39;hello\u0026#39; # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print(\u0026#39;message hash: \u0026#39;, signedMessage.messageHash.hex()) # print(signedMessage) print(\u0026#39;v: \u0026#39;, int(signedMessage.v)) print(\u0026#39;r: \u0026#39;, hex(signedMessage.r)) print(\u0026#39;s: \u0026#39;, hex(signedMessage.s)) print(\u0026#39;signature: \u0026#39;, signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3.","keywords":[],"articleBody":"1. 对message进行签名 from eth_account.messages import encode_defunct from web3 import Web3 from eth_keys import keys  KEY = ... # 填写账户私钥 w3 = Web3(Web3.HTTPProvider(input eth node url/)) # 请填写以太坊的节点url account = w3.eth.account.from_key(KEY) print('address: ', account.address) rawText = 'hello' # 签名message signedMessage = account.sign_message(encode_defunct(text=rawText)) print('message hash: ', signedMessage.messageHash.hex()) # print(signedMessage) print('v: ', int(signedMessage.v)) print('r: ', hex(signedMessage.r)) print('s: ', hex(signedMessage.s)) print('signature: ', signedMessage.signature.hex()) print(w3.eth.account.recover_message(encode_defunct(text=rawText), signature=signedMessage.signature)) 2. 执行脚本，得到 address: 0x1c74c86906d91766e143e1d009C8604b66001363 message hash: 0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750 v: 28 r: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f s: 0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd signature: 0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c 0x1c74c86906d91766e143e1d009C8604b66001363 3. 智能合约代码 pragma solidity ^0.8.13;  contract VerifySign{  //公匙：0x1c74c86906d91766e143e1d009C8604b66001363  //sha3(msg): 0x4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45 (web3.sha3(\"abc\");)  //签名后的数据：0x7eeb34fb6770d2b935de3657652e8060033ec47f57d10acbcc6a4b4d69f82db12d8ddd81e67a01a4a51a0e658760e895bab90a24cc0d7803800098be779ea1d91c   //将原始数据按段切割出来指定长度  function slice(bytes memory data, uint start, uint len) private returns (bytes memory) {  bytes memory b = new bytes(len);   for(uint i = 0; i  len; i++){  b[i] = data[i + start];  }   return b;  }   //bytes转换为bytes32  function bytesToBytes32(bytes memory source) private returns (bytes32 result) {  assembly {  result := mload(add(source, 32))  }  }   // \"\\x19Ethereum Signed Message:\\n{{len}}\"  function VerifyMessageV1(bytes32 messageHash, uint8 _v, bytes32 _r, bytes32 _s) public pure returns (address signer) {  signer = ecrecover(messageHash, _v, _r, _s);  }   address addr;  bytes32 r; bytes32 s; uint8 v;  function VerifyMessageV2(bytes32 messageHash, bytes memory signedString) public {  r = bytesToBytes32(slice(signedString, 0, 32));  s = bytesToBytes32(slice(signedString, 32, 32));  v = uint8(slice(signedString, 64, 1)[0]);  addr = ecrecover(messageHash, v, r, s);  }   function getSignCheckResult() public view returns (address _addr, bytes32 _r, bytes32 _s, uint8 _v){  _addr = addr;  _v = v;  _r = r;  _s = s;  } } 4. 部署智能合约到remix https://remix.ethereum.org/\n5. 执行VerifyMessageV1函数 输入参数：\n{  \"messageHash\": \"0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750\",  \"signedString\": \"28\",  \"_r\": \"0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f\",  \"_s\": \"0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd\", } 返回结果：\n{  \"signer\": \"0x1c74c86906d91766e143e1d009C8604b66001363\", } signer和签名账户的地址一致\n6. 执行VerifyMessageV2函数 输入参数：\n{  \"messageHash\": \"0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750\",  \"signedString\": \"0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c\", } 执行getSignCheckResult，返回结果：\n{  \"_addr\": \"0x1c74c86906d91766e143e1d009C8604b66001363\",  \"_r\": \"0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f\",  \"_s\": \"0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd\",  \"_v\": \"28\", } _addr和签名账户的地址一致\n","wordCount":"278","inLanguage":"en","datePublished":"2022-03-27T08:08:21+08:00","dateModified":"2022-03-27T08:08:21+08:00","author":{"@type":"Person","name":"Xuqi.Zhong"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://zhongxuqi.github.io/blockchain/2022-03-27/"},"publisher":{"@type":"Organization","name":"Xuqi.Zhong的博客","logo":{"@type":"ImageObject","url":"https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://zhongxuqi.github.io/ accesskey=h title="Xuqi.Zhong的博客 (Alt + H)"><img src=https://zhongxuqi.github.io/apple-touch-icon.png alt aria-label=logo height=35>Xuqi.Zhong的博客</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://zhongxuqi.github.io/ title=Home><span>Home</span></a></li><li><a href=https://zhongxuqi.github.io/web3 title=Web3><span>Web3</span></a></li><li><a href=https://zhongxuqi.github.io/blockchain title=Blockchain><span>Blockchain</span></a></li><li><a href=https://zhongxuqi.github.io/archives title=Archives><span>Archives</span></a></li><li><a href=https://zhongxuqi.github.io/search title="Search (Alt + /)" accesskey=/><span>Search</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://zhongxuqi.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://zhongxuqi.github.io/blockchain/>Blockchains</a></div><h1 class=post-title>Eth智能合约签名校验 - 可用于实现多签合约</h1><div class=post-meta><span title="2022-03-27 08:08:21 +0800 CST">2022-03-27</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;278 words&nbsp;·&nbsp;Xuqi.Zhong</div></header><div class=post-content><h2 id=1-对message进行签名>1. 对message进行签名<a hidden class=anchor aria-hidden=true href=#1-对message进行签名>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> eth_account.messages <span style=color:#f92672>import</span> encode_defunct
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> web3 <span style=color:#f92672>import</span> Web3
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> eth_keys <span style=color:#f92672>import</span> keys
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>KEY <span style=color:#f92672>=</span> <span style=color:#f92672>...</span> <span style=color:#75715e># 填写账户私钥</span>
+</span></span><span style=display:flex><span>w3 <span style=color:#f92672>=</span> Web3(Web3<span style=color:#f92672>.</span>HTTPProvider(<span style=color:#f92672>&lt;</span>input eth node url<span style=color:#f92672>/&gt;</span>)) <span style=color:#75715e># 请填写以太坊的节点url</span>
+</span></span><span style=display:flex><span>account <span style=color:#f92672>=</span> w3<span style=color:#f92672>.</span>eth<span style=color:#f92672>.</span>account<span style=color:#f92672>.</span>from_key(KEY)
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;address: &#39;</span>, account<span style=color:#f92672>.</span>address)
+</span></span><span style=display:flex><span>rawText <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;hello&#39;</span> <span style=color:#75715e># 签名message</span>
+</span></span><span style=display:flex><span>signedMessage <span style=color:#f92672>=</span> account<span style=color:#f92672>.</span>sign_message(encode_defunct(text<span style=color:#f92672>=</span>rawText))
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;message hash: &#39;</span>, signedMessage<span style=color:#f92672>.</span>messageHash<span style=color:#f92672>.</span>hex())
+</span></span><span style=display:flex><span><span style=color:#75715e># print(signedMessage)</span>
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;v: &#39;</span>, int(signedMessage<span style=color:#f92672>.</span>v))
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;r: &#39;</span>, hex(signedMessage<span style=color:#f92672>.</span>r))
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;s: &#39;</span>, hex(signedMessage<span style=color:#f92672>.</span>s))
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#39;signature: &#39;</span>, signedMessage<span style=color:#f92672>.</span>signature<span style=color:#f92672>.</span>hex())
+</span></span><span style=display:flex><span>print(w3<span style=color:#f92672>.</span>eth<span style=color:#f92672>.</span>account<span style=color:#f92672>.</span>recover_message(encode_defunct(text<span style=color:#f92672>=</span>rawText), signature<span style=color:#f92672>=</span>signedMessage<span style=color:#f92672>.</span>signature))
+</span></span></code></pre></div><h2 id=2-执行脚本得到>2. 执行脚本，得到<a hidden class=anchor aria-hidden=true href=#2-执行脚本得到>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>address:  0x1c74c86906d91766e143e1d009C8604b66001363
+</span></span><span style=display:flex><span>message hash:  0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750
+</span></span><span style=display:flex><span>v:  <span style=color:#ae81ff>28</span>
+</span></span><span style=display:flex><span>r:  0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f
+</span></span><span style=display:flex><span>s:  0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd
+</span></span><span style=display:flex><span>signature:  0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c
+</span></span><span style=display:flex><span>0x1c74c86906d91766e143e1d009C8604b66001363
+</span></span></code></pre></div><h2 id=3-智能合约代码>3. 智能合约代码<a hidden class=anchor aria-hidden=true href=#3-智能合约代码>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-solidity data-lang=solidity><span style=display:flex><span><span style=color:#66d9ef>pragma solidity</span> <span style=color:#f92672>^</span><span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>8</span>.<span style=color:#ae81ff>13</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>contract</span> <span style=color:#a6e22e>VerifySign</span>{
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//公匙：0x1c74c86906d91766e143e1d009C8604b66001363
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#75715e>//sha3(msg): 0x4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45 (web3.sha3(&#34;abc&#34;);)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#75715e>//签名后的数据：0x7eeb34fb6770d2b935de3657652e8060033ec47f57d10acbcc6a4b4d69f82db12d8ddd81e67a01a4a51a0e658760e895bab90a24cc0d7803800098be779ea1d91c
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//将原始数据按段切割出来指定长度
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>slice</span>(<span style=color:#66d9ef>bytes</span> <span style=color:#66d9ef>memory</span> data, <span style=color:#66d9ef>uint</span> start, <span style=color:#66d9ef>uint</span> len) <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>returns</span> (<span style=color:#66d9ef>bytes</span> <span style=color:#66d9ef>memory</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>bytes</span> <span style=color:#66d9ef>memory</span> b <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>bytes</span>(len);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>uint</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> len; i<span style=color:#f92672>++</span>){
+</span></span><span style=display:flex><span>      b[i] <span style=color:#f92672>=</span> data[i <span style=color:#f92672>+</span> start];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> b;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>//bytes转换为bytes32
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>bytesToBytes32</span>(<span style=color:#66d9ef>bytes</span> <span style=color:#66d9ef>memory</span> source) <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>returns</span> (<span style=color:#66d9ef>bytes32</span> result) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>assembly</span> {
+</span></span><span style=display:flex><span>        result <span style=color:#f92672>:=</span> <span style=color:#a6e22e>mload</span>(<span style=color:#a6e22e>add</span>(source, <span style=color:#ae81ff>32</span>))
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// &#34;\x19Ethereum Signed Message:\n{{len}}&#34;
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>VerifyMessageV1</span>(<span style=color:#66d9ef>bytes32</span> messageHash, <span style=color:#66d9ef>uint8</span> _v, <span style=color:#66d9ef>bytes32</span> _r, <span style=color:#66d9ef>bytes32</span> _s) <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>pure</span> <span style=color:#66d9ef>returns</span> (<span style=color:#66d9ef>address</span> signer) {
+</span></span><span style=display:flex><span>    signer <span style=color:#f92672>=</span> ecrecover(messageHash, _v, _r, _s);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>address</span> addr;
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>bytes32</span> r; <span style=color:#66d9ef>bytes32</span> s; <span style=color:#66d9ef>uint8</span> v;
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>VerifyMessageV2</span>(<span style=color:#66d9ef>bytes32</span> messageHash, <span style=color:#66d9ef>bytes</span> <span style=color:#66d9ef>memory</span> signedString) <span style=color:#66d9ef>public</span> {
+</span></span><span style=display:flex><span>    r <span style=color:#f92672>=</span> bytesToBytes32(slice(signedString, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>32</span>));
+</span></span><span style=display:flex><span>    s <span style=color:#f92672>=</span> bytesToBytes32(slice(signedString, <span style=color:#ae81ff>32</span>, <span style=color:#ae81ff>32</span>));
+</span></span><span style=display:flex><span>    v <span style=color:#f92672>=</span> <span style=color:#66d9ef>uint8</span>(slice(signedString, <span style=color:#ae81ff>64</span>, <span style=color:#ae81ff>1</span>)[<span style=color:#ae81ff>0</span>]);
+</span></span><span style=display:flex><span>    addr <span style=color:#f92672>=</span> ecrecover(messageHash, v, r, s);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getSignCheckResult</span>() <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>view</span> <span style=color:#66d9ef>returns</span> (<span style=color:#66d9ef>address</span> _addr, <span style=color:#66d9ef>bytes32</span> _r, <span style=color:#66d9ef>bytes32</span> _s, <span style=color:#66d9ef>uint8</span> _v){
+</span></span><span style=display:flex><span>    _addr <span style=color:#f92672>=</span> addr;
+</span></span><span style=display:flex><span>    _v <span style=color:#f92672>=</span> v;
+</span></span><span style=display:flex><span>    _r <span style=color:#f92672>=</span> r;
+</span></span><span style=display:flex><span>    _s <span style=color:#f92672>=</span> s;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=4-部署智能合约到remix>4. 部署智能合约到remix<a hidden class=anchor aria-hidden=true href=#4-部署智能合约到remix>#</a></h2><p><a href=https://remix.ethereum.org/>https://remix.ethereum.org/</a></p><h2 id=5-执行verifymessagev1函数>5. 执行VerifyMessageV1函数<a hidden class=anchor aria-hidden=true href=#5-执行verifymessagev1函数>#</a></h2><p>输入参数：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;messageHash&#34;</span>: <span style=color:#e6db74>&#34;0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;signedString&#34;</span>: <span style=color:#e6db74>&#34;28&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_r&#34;</span>: <span style=color:#e6db74>&#34;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_s&#34;</span>: <span style=color:#e6db74>&#34;0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd&#34;</span>,
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>返回结果：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;signer&#34;</span>: <span style=color:#e6db74>&#34;0x1c74c86906d91766e143e1d009C8604b66001363&#34;</span>,
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>signer和签名账户的地址一致</p><h2 id=6-执行verifymessagev2函数>6. 执行VerifyMessageV2函数<a hidden class=anchor aria-hidden=true href=#6-执行verifymessagev2函数>#</a></h2><p>输入参数：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;messageHash&#34;</span>: <span style=color:#e6db74>&#34;0x50b2c43fd39106bafbba0da34fc430e1f91e3c96ea2acee2bc34119f92b37750&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;signedString&#34;</span>: <span style=color:#e6db74>&#34;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd1c&#34;</span>,
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>执行getSignCheckResult，返回结果：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_addr&#34;</span>: <span style=color:#e6db74>&#34;0x1c74c86906d91766e143e1d009C8604b66001363&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_r&#34;</span>: <span style=color:#e6db74>&#34;0x5a0121bea4f2c1e9e6aad76bd3e06191a533c0b53a77df31e3b6310dbf4f698f&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_s&#34;</span>: <span style=color:#e6db74>&#34;0x17216a4bfd7cf812bf2a6d9b44122c807880a5cb3de403d4baa8e0fb352189dd&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_v&#34;</span>: <span style=color:#e6db74>&#34;28&#34;</span>,
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>_addr和签名账户的地址一致</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://zhongxuqi.github.io/blockchain/2022-08-18/><span class=title>« Prev</span><br><span>用Hardhat开发智能合约，并发布ERC20 Token</span></a>
+<a class=next href=https://zhongxuqi.github.io/blockchain/2022-03-15/><span class=title>Next »</span><br><span>打造以太坊私有链，合约的部署与使用</span></a></nav><div class=share-buttons><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on twitter" href="https://twitter.com/intent/tweet/?text=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f&hashtags="><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f&title=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6&summary=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6&source=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f&title=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on whatsapp" href="https://api.whatsapp.com/send?text=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6%20-%20https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share Eth智能合约签名校验 - 可用于实现多签合约 on telegram" href="https://telegram.me/share/url?text=Eth%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%e7%ad%be%e5%90%8d%e6%a0%a1%e9%aa%8c%20-%20%e5%8f%af%e7%94%a8%e4%ba%8e%e5%ae%9e%e7%8e%b0%e5%a4%9a%e7%ad%be%e5%90%88%e7%ba%a6&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-03-27%2f"><svg viewBox="2 2 28 28" height="30" width="30" fill="currentcolor"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg></a></div></footer></article></main><footer class=footer><span>&copy; 2023 <a href=https://zhongxuqi.github.io/>Xuqi.Zhong的博客</a></span>
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(t){t.preventDefault();var e=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView({behavior:"smooth"}),e==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${e}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

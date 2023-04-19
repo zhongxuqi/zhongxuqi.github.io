@@ -1,367 +1,146 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-  <title>用Hardhat开发智能合约，并发布ERC20 Token | ZhongXuQi的技术博客</title>
-
-  <meta charset="UTF-8">
-  <meta name="language" content="en">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  
-  
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="用Hardhat开发智能合约，并发布ERC20 Token" />
-  <meta name="twitter:description" content=""/>
-  <meta name="twitter:site" content="https://twitter.com/zhongxuqi" />
-  <meta name="twitter:creator" content="https://twitter.com/zhongxuqi" />
-  
-
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-
-
-  
-  
-    
- 
-  
-  
-  
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" integrity="sha256-47DEQpj8HBSa&#43;/TImW&#43;5JCeuQeRkm5NMpJWZG3hSuFU="/>
-  
-  
-   
-   
-    
-
-<script type="application/ld+json">
-  
-    { 
-      "@context": "http://schema.org", 
-      "@type": "WebSite", 
-      "url": "https:\/\/zhongxuqi.github.io\/blockchain\/2022-08-18\/",
-      "name": "用Hardhat开发智能合约，并发布ERC20 Token",
-      "author": {
-        "@type": "Person",
-        "name": ""
-      },
-      "description": ""
-    }
-  
-  </script>
-</head>
-
-<body>
-  <div class="burger__container">
-  <div class="burger" aria-controls="navigation" aria-label="Menu">
-    <div class="burger__meat burger__meat--1"></div>
-    <div class="burger__meat burger__meat--2"></div>
-    <div class="burger__meat burger__meat--3"></div>
-  </div>
-</div>
- 
-
-  <nav class="nav" id="navigation">
-  <ul class="nav__list">
-    
-    
-      <li>
-        <a  href="/">主页</a>
-      </li>
-    
-      <li>
-        <a  class="active"
-         href="/blockchain">区块链</a>
-      </li>
-    
-      <li>
-        <a  href="/mobile">移动端开发</a>
-      </li>
-    
-      <li>
-        <a  href="/acm">ACM</a>
-      </li>
-    
-      <li>
-        <a  href="/tools">开发工具</a>
-      </li>
-    
-  </ul>
-</nav>
-
-
-  <main>
-    
-    
-
-    <div class="flex-wrapper">
-      <div class="post__container">
-        <div class="post">
-          <header class="post__header">
-            <h1 id="post__title">用Hardhat开发智能合约，并发布ERC20 Token</h1>
-            <time datetime="2022-08-18 14:25:12 &#43;0800 CST" class="post__date">Aug 18 2022</time> 
-          </header>
-          <article class="post__content">
-              
-<h2 id="1-安装hardhat">1. 安装Hardhat<a class="anchor" href="#1-安装hardhat">#</a></h2>
-<pre><code class="language-bash">npm install --save-dev hardhat
-</code></pre>
-<h2 id="2-初始化hardhat工程">2. 初始化Hardhat工程<a class="anchor" href="#2-初始化hardhat工程">#</a></h2>
-<pre><code class="language-bash">npx hardhat
-</code></pre>
-<h2 id="3-安装官方contract库">3. 安装官方contract库<a class="anchor" href="#3-安装官方contract库">#</a></h2>
-<pre><code class="language-bash">npm install @openzeppelin/contracts
-</code></pre>
-<h2 id="4-完成token智能合约代码">4. 完成Token智能合约代码<a class="anchor" href="#4-完成token智能合约代码">#</a></h2>
-<p>目录<code>contracts/DrawToken.sol</code></p>
-<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
-
-import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;
-import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
-
-contract DrawToken is ERC20, Ownable {
-    constructor() ERC20(&quot;DrawToken&quot;, &quot;DTK&quot;) {}
-
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
-    }
-}
-</code></pre>
-<h2 id="5-完成合约部署代码">5. 完成合约部署代码<a class="anchor" href="#5-完成合约部署代码">#</a></h2>
-<p>目录<code>scripts/deploy.ts</code></p>
-<pre><code class="language-js">import { ethers } from &quot;hardhat&quot;;
-
-async function main() {
-  // DrawToken
-  const DrawToken = await ethers.getContractFactory(&quot;DrawToken&quot;);
-  const drawToken = await DrawToken.deploy();
-  await drawToken.deployed();
-  console.log(`drawToken deployed to ${drawToken.address}`);
-}
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) =&gt; {
-  console.error(error);
-  process.exitCode = 1;
-});
-</code></pre>
-<h2 id="6-启动本地私有链">6. 启动本地私有链<a class="anchor" href="#6-启动本地私有链">#</a></h2>
-<pre><code class="language-bash">npx hardhat node
-</code></pre>
-<h2 id="7-部署合约">7. 部署合约<a class="anchor" href="#7-部署合约">#</a></h2>
-<pre><code class="language-bash">npx hardhat run --network localhost scripts/deploy.ts
-</code></pre>
-<p>得到合约地址</p>
-<pre><code class="language-bash">drawToken deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3
-</code></pre>
-<h2 id="8-启动nodejs并初始化环境">8. 启动nodejs，并初始化环境<a class="anchor" href="#8-启动nodejs并初始化环境">#</a></h2>
-<pre><code class="language-shell"># node
-Welcome to Node.js v16.15.1.
-Type &quot;.help&quot; for more information.
-&gt; const { ethers } = require(&quot;ethers&quot;);
-undefined
-&gt; const provider = new ethers.providers.JsonRpcProvider();
-undefined
-&gt; account1 = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',provider)
-Wallet {
-  _isSigner: true,
-  _signingKey: [Function (anonymous)],
-  _mnemonic: [Function (anonymous)],
-  address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-  provider: JsonRpcProvider {
-    _isProvider: true,
-    _events: [],
-    _emitted: { block: -2 },
-    disableCcipRead: false,
-    formatter: Formatter { formats: [Object] },
-    anyNetwork: false,
-    _networkPromise: Promise {
-      [Object],
-      [Symbol(async_id_symbol)]: 47,
-      [Symbol(trigger_async_id_symbol)]: 5,
-      [Symbol(destroyed)]: [Object]
-    },
-    _maxInternalBlockNumber: -1024,
-    _lastBlockNumber: -2,
-    _maxFilterBlockRange: 10,
-    _pollingInterval: 4000,
-    _fastQueryDate: 0,
-    connection: { url: 'http://localhost:8545' },
-    _nextId: 43,
-    _eventLoopCache: { detectNetwork: null, eth_chainId: null },
-    _network: { chainId: 31337, name: 'unknown' }
-  }
-}
-</code></pre>
-<h2 id="9-初始化contract">9. 初始化contract<a class="anchor" href="#9-初始化contract">#</a></h2>
-<pre><code class="language-shell">&gt; abi = [{&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;constructor&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;Approval&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;previousOwner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;newOwner&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;OwnershipTransferred&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;from&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;Transfer&quot;,&quot;type&quot;:&quot;event&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;allowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;approve&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;account&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;balanceOf&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;decimals&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint8&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint8&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;subtractedValue&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;decreaseAllowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;spender&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;addedValue&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;increaseAllowance&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;mint&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;name&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;owner&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;renounceOwnership&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;symbol&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[],&quot;name&quot;:&quot;totalSupply&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;transfer&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;from&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;to&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;amount&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;transferFrom&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;bool&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;newOwner&quot;,&quot;type&quot;:&quot;address&quot;}],&quot;name&quot;:&quot;transferOwnership&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}]
-...
-&gt; contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3',abi,account1)
-...
-</code></pre>
-<p>调用合约基本方法</p>
-<pre><code class="language-shell">&gt; await contract.name()
-'DrawToken'
-&gt; await contract.symbol()
-'DTK'
-</code></pre>
-<h2 id="10-mint出token">10. mint出token<a class="anchor" href="#10-mint出token">#</a></h2>
-<pre><code class="language-shell">&gt; contractWithSigner = contract.connect(account1)
-...
-&gt; contractWithSigner.mint(await account1.getAddress(),100)
-{
-  type: 2,
-  chainId: 31337,
-  nonce: 2,
-  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },
-  maxFeePerGas: BigNumber { _hex: '0xb5f20e1e', _isBigNumber: true },
-  gasPrice: null,
-  gasLimit: BigNumber { _hex: '0x0116e2', _isBigNumber: true },
-  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  value: BigNumber { _hex: '0x00', _isBigNumber: true },
-  data: '0x40c10f19000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000064',
-  accessList: [],
-  hash: '0x3e0a661dc1656fc7d3be8033f2f6fd4ceec8b05ac328c37fb1769d813a1c8524',
-  v: 1,
-  r: '0xff8f32375fcc5fb3d31634a5b604c8bc4d975b1b694611a4323609d990f944b0',
-  s: '0x14a5b08e8afd9686c1c89962f490a82836dd8aa95cd6c9adcb611596cbc46c91',
-  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-  confirmations: 0,
-  wait: [Function (anonymous)]
-}
-</code></pre>
-<p>查询是否mint成功</p>
-<pre><code class="language-shell">&gt; balance = await contractWithSigner.balanceOf(await account1.getAddress())
-BigNumber { _hex: '0x64', _isBigNumber: true }
-&gt; balance.toString()
-'100'
-</code></pre>
-<h2 id="11-发送token">11. 发送Token<a class="anchor" href="#11-发送token">#</a></h2>
-<pre><code class="language-shell">&gt; account2 = new ethers.Wallet('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',provider)
-...
-&gt; contractWithSigner.transfer(await account2.getAddress(), 50)
-{
-  type: 2,
-  chainId: 31337,
-  nonce: 3,
-  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },
-  maxFeePerGas: BigNumber { _hex: '0xac5e7c24', _isBigNumber: true },
-  gasPrice: null,
-  gasLimit: BigNumber { _hex: '0xcc41', _isBigNumber: true },
-  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  value: BigNumber { _hex: '0x00', _isBigNumber: true },
-  data: '0xa9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000032',
-  accessList: [],
-  hash: '0xe0d69fe8dbffbb507090d6bc62c4f9127d88b9f747c466fd5a8df8cd5e60690c',
-  v: 0,
-  r: '0xed8ebd334cf1996a9e3021866aca03c50bf98ffbbbd4dccb15352baabc0c0b02',
-  s: '0x706acb4a6f768c095d3ac56f51dd2c4502da8236f52c39137891250ddab5de8c',
-  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-  confirmations: 0,
-  wait: [Function (anonymous)]
-}
-</code></pre>
-<p>查看Token是否发送成功</p>
-<pre><code class="language-shell">&gt; (await contractWithSigner.balanceOf(await account2.getAddress())).toString()
-'50'
-&gt; (await contractWithSigner.balanceOf(await account1.getAddress())).toString()
-'50'
-</code></pre>
-
-
-              
-          </article>
-          
-
- <div class="pagination">
-  
-    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-03-27/">
-        <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">Eth智能合约签名校验 - 可用于实现多签合约</span>
-    </a>
-  
-
-  
-    <a class="pagination__item" href="https://zhongxuqi.github.io/blockchain/2022-08-19/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >用Hardhat开发智能合约，并发布ERC721 NFT</span>
-    </a>
-  
-</div>
-
-          
-          <footer class="post__footer">
-            
-
-
-<div class="social-icons">
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="Twitter"
-        href="https://twitter.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/twitter.svg')"></div>
-      </a>
-    
-  
-     
-    
-      <a
-        class="social-icons__link"
-        title="GitHub"
-        href="https://github.com/zhongxuqi"
-        target="_blank"
-        rel="me noopener"
-      >
-        <div class="social-icons__icon" style="background-image: url('https://zhongxuqi.github.io/svg/github.svg')"></div>
-      </a>
-    
-     
-</div>
-
-            <p></p>
-          </footer>
-          </div>
-      </div>
-      
-    </div>
-    
-
-  </main>
-
-   
-
-  
-  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
-  
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
-
-  
-  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
-    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
-
-  
-
-
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>用Hardhat开发智能合约，并发布ERC20 Token | Xuqi.Zhong的博客</title><meta name=keywords content><meta name=description content="1. 安装Hardhat npm install --save-dev hardhat 2. 初始化Hardhat工程 npx hardhat 3. 安装官方contract库 npm install @openzeppelin/contracts 4. 完成Token智能合约代码 目录contracts/DrawToken.sol
+// SPDX-License-Identifier: MIT pragma solidity ^0.8.4;  import &#34;@openzeppelin/contracts/token/ERC20/ERC20.sol&#34;; import &#34;@openzeppelin/contracts/access/Ownable.sol&#34;;  contract DrawToken is ERC20, Ownable {  constructor() ERC20(&#34;DrawToken&#34;, &#34;DTK&#34;) {}   function mint(address to, uint256 amount) public onlyOwner {  _mint(to, amount);  } } 5. 完成合约部署代码 目录scripts/deploy.ts
+import { ethers } from &#34;hardhat&#34;;  async function main() {  // DrawToken  const DrawToken = await ethers."><meta name=author content="Xuqi.Zhong"><link rel=canonical href=https://zhongxuqi.github.io/blockchain/2022-08-18/><meta name=google-site-verification content="XYZabc"><meta name=yandex-verification content="XYZabc"><meta name=msvalidate.01 content="XYZabc"><link crossorigin=anonymous href=/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe+FVUFzPh7U=" rel="preload stylesheet" as=style><script defer crossorigin=anonymous src=/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG+9vmJ0cTS+ovo0FeA=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><meta property="og:title" content="用Hardhat开发智能合约，并发布ERC20 Token"><meta property="og:description" content="1. 安装Hardhat npm install --save-dev hardhat 2. 初始化Hardhat工程 npx hardhat 3. 安装官方contract库 npm install @openzeppelin/contracts 4. 完成Token智能合约代码 目录contracts/DrawToken.sol
+// SPDX-License-Identifier: MIT pragma solidity ^0.8.4;  import &#34;@openzeppelin/contracts/token/ERC20/ERC20.sol&#34;; import &#34;@openzeppelin/contracts/access/Ownable.sol&#34;;  contract DrawToken is ERC20, Ownable {  constructor() ERC20(&#34;DrawToken&#34;, &#34;DTK&#34;) {}   function mint(address to, uint256 amount) public onlyOwner {  _mint(to, amount);  } } 5. 完成合约部署代码 目录scripts/deploy.ts
+import { ethers } from &#34;hardhat&#34;;  async function main() {  // DrawToken  const DrawToken = await ethers."><meta property="og:type" content="article"><meta property="og:url" content="https://zhongxuqi.github.io/blockchain/2022-08-18/"><meta property="og:image" content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta property="article:section" content="blockchain"><meta property="article:published_time" content="2022-08-18T14:25:12+08:00"><meta property="article:modified_time" content="2022-08-18T14:25:12+08:00"><meta property="og:site_name" content="Xuqi.Zhong的博客"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890"><meta name=twitter:title content="用Hardhat开发智能合约，并发布ERC20 Token"><meta name=twitter:description content="1. 安装Hardhat npm install --save-dev hardhat 2. 初始化Hardhat工程 npx hardhat 3. 安装官方contract库 npm install @openzeppelin/contracts 4. 完成Token智能合约代码 目录contracts/DrawToken.sol
+// SPDX-License-Identifier: MIT pragma solidity ^0.8.4;  import &#34;@openzeppelin/contracts/token/ERC20/ERC20.sol&#34;; import &#34;@openzeppelin/contracts/access/Ownable.sol&#34;;  contract DrawToken is ERC20, Ownable {  constructor() ERC20(&#34;DrawToken&#34;, &#34;DTK&#34;) {}   function mint(address to, uint256 amount) public onlyOwner {  _mint(to, amount);  } } 5. 完成合约部署代码 目录scripts/deploy.ts
+import { ethers } from &#34;hardhat&#34;;  async function main() {  // DrawToken  const DrawToken = await ethers."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blockchains","item":"https://zhongxuqi.github.io/blockchain/"},{"@type":"ListItem","position":2,"name":"用Hardhat开发智能合约，并发布ERC20 Token","item":"https://zhongxuqi.github.io/blockchain/2022-08-18/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"用Hardhat开发智能合约，并发布ERC20 Token","name":"用Hardhat开发智能合约，并发布ERC20 Token","description":"1. 安装Hardhat npm install --save-dev hardhat 2. 初始化Hardhat工程 npx hardhat 3. 安装官方contract库 npm install @openzeppelin/contracts 4. 完成Token智能合约代码 目录contracts/DrawToken.sol\n// SPDX-License-Identifier: MIT pragma solidity ^0.8.4;  import \u0026#34;@openzeppelin/contracts/token/ERC20/ERC20.sol\u0026#34;; import \u0026#34;@openzeppelin/contracts/access/Ownable.sol\u0026#34;;  contract DrawToken is ERC20, Ownable {  constructor() ERC20(\u0026#34;DrawToken\u0026#34;, \u0026#34;DTK\u0026#34;) {}   function mint(address to, uint256 amount) public onlyOwner {  _mint(to, amount);  } } 5. 完成合约部署代码 目录scripts/deploy.ts\nimport { ethers } from \u0026#34;hardhat\u0026#34;;  async function main() {  // DrawToken  const DrawToken = await ethers.","keywords":[],"articleBody":"1. 安装Hardhat npm install --save-dev hardhat 2. 初始化Hardhat工程 npx hardhat 3. 安装官方contract库 npm install @openzeppelin/contracts 4. 完成Token智能合约代码 目录contracts/DrawToken.sol\n// SPDX-License-Identifier: MIT pragma solidity ^0.8.4;  import \"@openzeppelin/contracts/token/ERC20/ERC20.sol\"; import \"@openzeppelin/contracts/access/Ownable.sol\";  contract DrawToken is ERC20, Ownable {  constructor() ERC20(\"DrawToken\", \"DTK\") {}   function mint(address to, uint256 amount) public onlyOwner {  _mint(to, amount);  } } 5. 完成合约部署代码 目录scripts/deploy.ts\nimport { ethers } from \"hardhat\";  async function main() {  // DrawToken  const DrawToken = await ethers.getContractFactory(\"DrawToken\");  const drawToken = await DrawToken.deploy();  await drawToken.deployed();  console.log(`drawToken deployed to ${drawToken.address}`); }  // We recommend this pattern to be able to use async/await everywhere // and properly handle errors. main().catch((error) = {  console.error(error);  process.exitCode = 1; }); 6. 启动本地私有链 npx hardhat node 7. 部署合约 npx hardhat run --network localhost scripts/deploy.ts 得到合约地址\ndrawToken deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3 8. 启动nodejs，并初始化环境 # node Welcome to Node.js v16.15.1. Type \".help\" for more information.  const { ethers } = require(\"ethers\"); undefined  const provider = new ethers.providers.JsonRpcProvider(); undefined  account1 = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',provider) Wallet {  _isSigner: true,  _signingKey: [Function (anonymous)],  _mnemonic: [Function (anonymous)],  address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',  provider: JsonRpcProvider {  _isProvider: true,  _events: [],  _emitted: { block: -2 },  disableCcipRead: false,  formatter: Formatter { formats: [Object] },  anyNetwork: false,  _networkPromise: Promise {  [Object],  [Symbol(async_id_symbol)]: 47,  [Symbol(trigger_async_id_symbol)]: 5,  [Symbol(destroyed)]: [Object]  },  _maxInternalBlockNumber: -1024,  _lastBlockNumber: -2,  _maxFilterBlockRange: 10,  _pollingInterval: 4000,  _fastQueryDate: 0,  connection: { url: 'http://localhost:8545' },  _nextId: 43,  _eventLoopCache: { detectNetwork: null, eth_chainId: null },  _network: { chainId: 31337, name: 'unknown' }  } } 9. 初始化contract  abi = [{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"subtractedValue\",\"type\":\"uint256\"}],\"name\":\"decreaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"addedValue\",\"type\":\"uint256\"}],\"name\":\"increaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}] ...  contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3',abi,account1) ... 调用合约基本方法\n await contract.name() 'DrawToken'  await contract.symbol() 'DTK' 10. mint出token  contractWithSigner = contract.connect(account1) ...  contractWithSigner.mint(await account1.getAddress(),100) {  type: 2,  chainId: 31337,  nonce: 2,  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },  maxFeePerGas: BigNumber { _hex: '0xb5f20e1e', _isBigNumber: true },  gasPrice: null,  gasLimit: BigNumber { _hex: '0x0116e2', _isBigNumber: true },  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',  value: BigNumber { _hex: '0x00', _isBigNumber: true },  data: '0x40c10f19000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000064',  accessList: [],  hash: '0x3e0a661dc1656fc7d3be8033f2f6fd4ceec8b05ac328c37fb1769d813a1c8524',  v: 1,  r: '0xff8f32375fcc5fb3d31634a5b604c8bc4d975b1b694611a4323609d990f944b0',  s: '0x14a5b08e8afd9686c1c89962f490a82836dd8aa95cd6c9adcb611596cbc46c91',  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',  confirmations: 0,  wait: [Function (anonymous)] } 查询是否mint成功\n balance = await contractWithSigner.balanceOf(await account1.getAddress()) BigNumber { _hex: '0x64', _isBigNumber: true }  balance.toString() '100' 11. 发送Token  account2 = new ethers.Wallet('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',provider) ...  contractWithSigner.transfer(await account2.getAddress(), 50) {  type: 2,  chainId: 31337,  nonce: 3,  maxPriorityFeePerGas: BigNumber { _hex: '0x59682f00', _isBigNumber: true },  maxFeePerGas: BigNumber { _hex: '0xac5e7c24', _isBigNumber: true },  gasPrice: null,  gasLimit: BigNumber { _hex: '0xcc41', _isBigNumber: true },  to: '0x5FbDB2315678afecb367f032d93F642f64180aa3',  value: BigNumber { _hex: '0x00', _isBigNumber: true },  data: '0xa9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000032',  accessList: [],  hash: '0xe0d69fe8dbffbb507090d6bc62c4f9127d88b9f747c466fd5a8df8cd5e60690c',  v: 0,  r: '0xed8ebd334cf1996a9e3021866aca03c50bf98ffbbbd4dccb15352baabc0c0b02',  s: '0x706acb4a6f768c095d3ac56f51dd2c4502da8236f52c39137891250ddab5de8c',  from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',  confirmations: 0,  wait: [Function (anonymous)] } 查看Token是否发送成功\n (await contractWithSigner.balanceOf(await account2.getAddress())).toString() '50'  (await contractWithSigner.balanceOf(await account1.getAddress())).toString() '50' ","wordCount":"434","inLanguage":"en","datePublished":"2022-08-18T14:25:12+08:00","dateModified":"2022-08-18T14:25:12+08:00","author":{"@type":"Person","name":"Xuqi.Zhong"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://zhongxuqi.github.io/blockchain/2022-08-18/"},"publisher":{"@type":"Organization","name":"Xuqi.Zhong的博客","logo":{"@type":"ImageObject","url":"https://zhongxuqi.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://zhongxuqi.github.io/ accesskey=h title="Xuqi.Zhong的博客 (Alt + H)"><img src=https://zhongxuqi.github.io/apple-touch-icon.png alt aria-label=logo height=35>Xuqi.Zhong的博客</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://zhongxuqi.github.io/ title=Home><span>Home</span></a></li><li><a href=https://zhongxuqi.github.io/web3 title=Web3><span>Web3</span></a></li><li><a href=https://zhongxuqi.github.io/blockchain title=Blockchain><span>Blockchain</span></a></li><li><a href=https://zhongxuqi.github.io/archives title=Archives><span>Archives</span></a></li><li><a href=https://zhongxuqi.github.io/search title="Search (Alt + /)" accesskey=/><span>Search</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://zhongxuqi.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://zhongxuqi.github.io/blockchain/>Blockchains</a></div><h1 class=post-title>用Hardhat开发智能合约，并发布ERC20 Token</h1><div class=post-meta><span title="2022-08-18 14:25:12 +0800 CST">2022-08-18</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;434 words&nbsp;·&nbsp;Xuqi.Zhong</div></header><div class=post-content><h2 id=1-安装hardhat>1. 安装Hardhat<a hidden class=anchor aria-hidden=true href=#1-安装hardhat>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>npm install --save-dev hardhat
+</span></span></code></pre></div><h2 id=2-初始化hardhat工程>2. 初始化Hardhat工程<a hidden class=anchor aria-hidden=true href=#2-初始化hardhat工程>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>npx hardhat
+</span></span></code></pre></div><h2 id=3-安装官方contract库>3. 安装官方contract库<a hidden class=anchor aria-hidden=true href=#3-安装官方contract库>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>npm install @openzeppelin/contracts
+</span></span></code></pre></div><h2 id=4-完成token智能合约代码>4. 完成Token智能合约代码<a hidden class=anchor aria-hidden=true href=#4-完成token智能合约代码>#</a></h2><p>目录<code>contracts/DrawToken.sol</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-solidity data-lang=solidity><span style=display:flex><span><span style=color:#75715e>// SPDX-License-Identifier: MIT
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>pragma solidity</span> <span style=color:#f92672>^</span><span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>8</span>.<span style=color:#ae81ff>4</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;@openzeppelin/contracts/token/ERC20/ERC20.sol&#34;</span>;
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;@openzeppelin/contracts/access/Ownable.sol&#34;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>contract</span> <span style=color:#a6e22e>DrawToken</span> <span style=color:#66d9ef>is</span> ERC20, Ownable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>constructor</span>() ERC20(<span style=color:#e6db74>&#34;DrawToken&#34;</span>, <span style=color:#e6db74>&#34;DTK&#34;</span>) {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>mint</span>(<span style=color:#66d9ef>address</span> to, <span style=color:#66d9ef>uint256</span> amount) <span style=color:#66d9ef>public</span> onlyOwner {
+</span></span><span style=display:flex><span>        _mint(to, amount);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=5-完成合约部署代码>5. 完成合约部署代码<a hidden class=anchor aria-hidden=true href=#5-完成合约部署代码>#</a></h2><p>目录<code>scripts/deploy.ts</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=display:flex><span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>ethers</span> } <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;hardhat&#34;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// DrawToken
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>DrawToken</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>ethers</span>.<span style=color:#a6e22e>getContractFactory</span>(<span style=color:#e6db74>&#34;DrawToken&#34;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>drawToken</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>DrawToken</span>.<span style=color:#a6e22e>deploy</span>();
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>drawToken</span>.<span style=color:#a6e22e>deployed</span>();
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>`drawToken deployed to </span><span style=color:#e6db74>${</span><span style=color:#a6e22e>drawToken</span>.<span style=color:#a6e22e>address</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// We recommend this pattern to be able to use async/await everywhere
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// and properly handle errors.
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#a6e22e>main</span>().<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>error</span>) =&gt; {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#a6e22e>error</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>process</span>.<span style=color:#a6e22e>exitCode</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><h2 id=6-启动本地私有链>6. 启动本地私有链<a hidden class=anchor aria-hidden=true href=#6-启动本地私有链>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>npx hardhat node
+</span></span></code></pre></div><h2 id=7-部署合约>7. 部署合约<a hidden class=anchor aria-hidden=true href=#7-部署合约>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>npx hardhat run --network localhost scripts/deploy.ts
+</span></span></code></pre></div><p>得到合约地址</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>drawToken deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3
+</span></span></code></pre></div><h2 id=8-启动nodejs并初始化环境>8. 启动nodejs，并初始化环境<a hidden class=anchor aria-hidden=true href=#8-启动nodejs并初始化环境>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e># node</span>
+</span></span><span style=display:flex><span>Welcome to Node.js v16.15.1.
+</span></span><span style=display:flex><span>Type <span style=color:#e6db74>&#34;.help&#34;</span> <span style=color:#66d9ef>for</span> more information.
+</span></span><span style=display:flex><span>&gt; const <span style=color:#f92672>{</span> ethers <span style=color:#f92672>}</span> <span style=color:#f92672>=</span> require<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;ethers&#34;</span><span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; const provider <span style=color:#f92672>=</span> new ethers.providers.JsonRpcProvider<span style=color:#f92672>()</span>;
+</span></span><span style=display:flex><span>undefined
+</span></span><span style=display:flex><span>&gt; account1 <span style=color:#f92672>=</span> new ethers.Wallet<span style=color:#f92672>(</span><span style=color:#e6db74>&#39;0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80&#39;</span>,provider<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Wallet <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  _isSigner: true,
+</span></span><span style=display:flex><span>  _signingKey: <span style=color:#f92672>[</span>Function <span style=color:#f92672>(</span>anonymous<span style=color:#f92672>)]</span>,
+</span></span><span style=display:flex><span>  _mnemonic: <span style=color:#f92672>[</span>Function <span style=color:#f92672>(</span>anonymous<span style=color:#f92672>)]</span>,
+</span></span><span style=display:flex><span>  address: <span style=color:#e6db74>&#39;0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266&#39;</span>,
+</span></span><span style=display:flex><span>  provider: JsonRpcProvider <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    _isProvider: true,
+</span></span><span style=display:flex><span>    _events: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>    _emitted: <span style=color:#f92672>{</span> block: -2 <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>    disableCcipRead: false,
+</span></span><span style=display:flex><span>    formatter: Formatter <span style=color:#f92672>{</span> formats: <span style=color:#f92672>[</span>Object<span style=color:#f92672>]</span> <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>    anyNetwork: false,
+</span></span><span style=display:flex><span>    _networkPromise: Promise <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>[</span>Object<span style=color:#f92672>]</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>[</span>Symbol<span style=color:#f92672>(</span>async_id_symbol<span style=color:#f92672>)]</span>: 47,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>[</span>Symbol<span style=color:#f92672>(</span>trigger_async_id_symbol<span style=color:#f92672>)]</span>: 5,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>[</span>Symbol<span style=color:#f92672>(</span>destroyed<span style=color:#f92672>)]</span>: <span style=color:#f92672>[</span>Object<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>    _maxInternalBlockNumber: -1024,
+</span></span><span style=display:flex><span>    _lastBlockNumber: -2,
+</span></span><span style=display:flex><span>    _maxFilterBlockRange: 10,
+</span></span><span style=display:flex><span>    _pollingInterval: 4000,
+</span></span><span style=display:flex><span>    _fastQueryDate: 0,
+</span></span><span style=display:flex><span>    connection: <span style=color:#f92672>{</span> url: <span style=color:#e6db74>&#39;http://localhost:8545&#39;</span> <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>    _nextId: 43,
+</span></span><span style=display:flex><span>    _eventLoopCache: <span style=color:#f92672>{</span> detectNetwork: null, eth_chainId: null <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>    _network: <span style=color:#f92672>{</span> chainId: 31337, name: <span style=color:#e6db74>&#39;unknown&#39;</span> <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><h2 id=9-初始化contract>9. 初始化contract<a hidden class=anchor aria-hidden=true href=#9-初始化contract>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; abi <span style=color:#f92672>=</span> <span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;constructor&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;anonymous&#34;</span>:false,<span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;owner&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;spender&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:false,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;value&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;Approval&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;event&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;anonymous&#34;</span>:false,<span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;previousOwner&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;newOwner&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;OwnershipTransferred&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;event&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;anonymous&#34;</span>:false,<span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;from&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:true,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;to&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;indexed&#34;</span>:false,<span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;value&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;Transfer&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;event&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;owner&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;spender&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;allowance&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;spender&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;amount&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;approve&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;account&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;balanceOf&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;decimals&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint8&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint8&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;spender&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;subtractedValue&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;decreaseAllowance&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;spender&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;addedValue&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;increaseAllowance&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;to&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;amount&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;mint&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;name&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;string&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;string&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;owner&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;renounceOwnership&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;symbol&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;string&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;string&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;totalSupply&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;view&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;to&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;amount&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;transfer&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;from&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;to&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;amount&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;uint256&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;transferFrom&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;bool&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}</span>,<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;inputs&#34;</span>:<span style=color:#f92672>[{</span><span style=color:#e6db74>&#34;internalType&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;newOwner&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;address&#34;</span><span style=color:#f92672>}]</span>,<span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;transferOwnership&#34;</span>,<span style=color:#e6db74>&#34;outputs&#34;</span>:<span style=color:#f92672>[]</span>,<span style=color:#e6db74>&#34;stateMutability&#34;</span>:<span style=color:#e6db74>&#34;nonpayable&#34;</span>,<span style=color:#e6db74>&#34;type&#34;</span>:<span style=color:#e6db74>&#34;function&#34;</span><span style=color:#f92672>}]</span>
+</span></span><span style=display:flex><span>...
+</span></span><span style=display:flex><span>&gt; contract <span style=color:#f92672>=</span> new ethers.Contract<span style=color:#f92672>(</span><span style=color:#e6db74>&#39;0x5FbDB2315678afecb367f032d93F642f64180aa3&#39;</span>,abi,account1<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><p>调用合约基本方法</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; await contract.name<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;DrawToken&#39;</span>
+</span></span><span style=display:flex><span>&gt; await contract.symbol<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;DTK&#39;</span>
+</span></span></code></pre></div><h2 id=10-mint出token>10. mint出token<a hidden class=anchor aria-hidden=true href=#10-mint出token>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; contractWithSigner <span style=color:#f92672>=</span> contract.connect<span style=color:#f92672>(</span>account1<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>...
+</span></span><span style=display:flex><span>&gt; contractWithSigner.mint<span style=color:#f92672>(</span>await account1.getAddress<span style=color:#f92672>()</span>,100<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  type: 2,
+</span></span><span style=display:flex><span>  chainId: 31337,
+</span></span><span style=display:flex><span>  nonce: 2,
+</span></span><span style=display:flex><span>  maxPriorityFeePerGas: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x59682f00&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  maxFeePerGas: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0xb5f20e1e&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  gasPrice: null,
+</span></span><span style=display:flex><span>  gasLimit: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x0116e2&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  to: <span style=color:#e6db74>&#39;0x5FbDB2315678afecb367f032d93F642f64180aa3&#39;</span>,
+</span></span><span style=display:flex><span>  value: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x00&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  data: <span style=color:#e6db74>&#39;0x40c10f19000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000064&#39;</span>,
+</span></span><span style=display:flex><span>  accessList: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>  hash: <span style=color:#e6db74>&#39;0x3e0a661dc1656fc7d3be8033f2f6fd4ceec8b05ac328c37fb1769d813a1c8524&#39;</span>,
+</span></span><span style=display:flex><span>  v: 1,
+</span></span><span style=display:flex><span>  r: <span style=color:#e6db74>&#39;0xff8f32375fcc5fb3d31634a5b604c8bc4d975b1b694611a4323609d990f944b0&#39;</span>,
+</span></span><span style=display:flex><span>  s: <span style=color:#e6db74>&#39;0x14a5b08e8afd9686c1c89962f490a82836dd8aa95cd6c9adcb611596cbc46c91&#39;</span>,
+</span></span><span style=display:flex><span>  from: <span style=color:#e6db74>&#39;0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266&#39;</span>,
+</span></span><span style=display:flex><span>  confirmations: 0,
+</span></span><span style=display:flex><span>  wait: <span style=color:#f92672>[</span>Function <span style=color:#f92672>(</span>anonymous<span style=color:#f92672>)]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>查询是否mint成功</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; balance <span style=color:#f92672>=</span> await contractWithSigner.balanceOf<span style=color:#f92672>(</span>await account1.getAddress<span style=color:#f92672>())</span>
+</span></span><span style=display:flex><span>BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x64&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>&gt; balance.toString<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;100&#39;</span>
+</span></span></code></pre></div><h2 id=11-发送token>11. 发送Token<a hidden class=anchor aria-hidden=true href=#11-发送token>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; account2 <span style=color:#f92672>=</span> new ethers.Wallet<span style=color:#f92672>(</span><span style=color:#e6db74>&#39;0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d&#39;</span>,provider<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>...
+</span></span><span style=display:flex><span>&gt; contractWithSigner.transfer<span style=color:#f92672>(</span>await account2.getAddress<span style=color:#f92672>()</span>, 50<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  type: 2,
+</span></span><span style=display:flex><span>  chainId: 31337,
+</span></span><span style=display:flex><span>  nonce: 3,
+</span></span><span style=display:flex><span>  maxPriorityFeePerGas: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x59682f00&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  maxFeePerGas: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0xac5e7c24&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  gasPrice: null,
+</span></span><span style=display:flex><span>  gasLimit: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0xcc41&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  to: <span style=color:#e6db74>&#39;0x5FbDB2315678afecb367f032d93F642f64180aa3&#39;</span>,
+</span></span><span style=display:flex><span>  value: BigNumber <span style=color:#f92672>{</span> _hex: <span style=color:#e6db74>&#39;0x00&#39;</span>, _isBigNumber: true <span style=color:#f92672>}</span>,
+</span></span><span style=display:flex><span>  data: <span style=color:#e6db74>&#39;0xa9059cbb00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c80000000000000000000000000000000000000000000000000000000000000032&#39;</span>,
+</span></span><span style=display:flex><span>  accessList: <span style=color:#f92672>[]</span>,
+</span></span><span style=display:flex><span>  hash: <span style=color:#e6db74>&#39;0xe0d69fe8dbffbb507090d6bc62c4f9127d88b9f747c466fd5a8df8cd5e60690c&#39;</span>,
+</span></span><span style=display:flex><span>  v: 0,
+</span></span><span style=display:flex><span>  r: <span style=color:#e6db74>&#39;0xed8ebd334cf1996a9e3021866aca03c50bf98ffbbbd4dccb15352baabc0c0b02&#39;</span>,
+</span></span><span style=display:flex><span>  s: <span style=color:#e6db74>&#39;0x706acb4a6f768c095d3ac56f51dd2c4502da8236f52c39137891250ddab5de8c&#39;</span>,
+</span></span><span style=display:flex><span>  from: <span style=color:#e6db74>&#39;0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266&#39;</span>,
+</span></span><span style=display:flex><span>  confirmations: 0,
+</span></span><span style=display:flex><span>  wait: <span style=color:#f92672>[</span>Function <span style=color:#f92672>(</span>anonymous<span style=color:#f92672>)]</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>查看Token是否发送成功</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>&gt; <span style=color:#f92672>(</span>await contractWithSigner.balanceOf<span style=color:#f92672>(</span>await account2.getAddress<span style=color:#f92672>()))</span>.toString<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;50&#39;</span>
+</span></span><span style=display:flex><span>&gt; <span style=color:#f92672>(</span>await contractWithSigner.balanceOf<span style=color:#f92672>(</span>await account1.getAddress<span style=color:#f92672>()))</span>.toString<span style=color:#f92672>()</span>
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;50&#39;</span>
+</span></span></code></pre></div></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://zhongxuqi.github.io/blockchain/2022-08-19/><span class=title>« Prev</span><br><span>用Hardhat开发智能合约，并发布ERC721 NFT</span></a>
+<a class=next href=https://zhongxuqi.github.io/blockchain/2022-03-27/><span class=title>Next »</span><br><span>Eth智能合约签名校验 - 可用于实现多签合约</span></a></nav><div class=share-buttons><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on twitter" href="https://twitter.com/intent/tweet/?text=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f&hashtags="><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f&title=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token&summary=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token&source=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f&title=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on whatsapp" href="https://api.whatsapp.com/send?text=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token%20-%20https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentcolor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg></a><a target=_blank rel="noopener noreferrer" aria-label="share 用Hardhat开发智能合约，并发布ERC20 Token on telegram" href="https://telegram.me/share/url?text=%e7%94%a8Hardhat%e5%bc%80%e5%8f%91%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6%ef%bc%8c%e5%b9%b6%e5%8f%91%e5%b8%83ERC20%20Token&url=https%3a%2f%2fzhongxuqi.github.io%2fblockchain%2f2022-08-18%2f"><svg viewBox="2 2 28 28" height="30" width="30" fill="currentcolor"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg></a></div></footer></article></main><footer class=footer><span>&copy; 2023 <a href=https://zhongxuqi.github.io/>Xuqi.Zhong的博客</a></span>
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(t){t.preventDefault();var e=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(e)}']`).scrollIntoView({behavior:"smooth"}),e==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${e}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
