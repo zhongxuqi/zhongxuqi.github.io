@@ -10,7 +10,22 @@
       <link>https://opensea.io/zh-CN/assets/ethereum/0xaf6434ff6a3a1fe62473dfacccda043caff6793c/2890</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 27 Feb 2023 21:57:17 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/web3/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 18 Apr 2023 09:34:58 +0800</lastBuildDate><atom:link href="https://zhongxuqi.github.io/web3/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解读Radiant: 去中心化借贷平台</title>
+      <link>https://zhongxuqi.github.io/web3/2023-04-18/</link>
+      <pubDate>Tue, 18 Apr 2023 09:34:58 +0800</pubDate>
+      
+      <guid>https://zhongxuqi.github.io/web3/2023-04-18/</guid>
+      <description>0 背景知识 2023年，Radiant异军突起，成为Arbitrum上面TVL规模最大的借贷平台，并且超过了老牌借贷平台Aave。 如果仔细它的项目代码，其实可以发现它的核心代码是复制了Aave v2的核心代码。 同时，在Aave v2的核心代码的基础上，Radiant开发团队也做了一些创新，下面我们来解读一下这个项目。
+1 Radiant的产品设计目标 支持无缝跨链的去中心化借贷平台。
+2 Radiant的核心竞争力  去中心化。Radiant的所有功能都是智能合约实现并且开源，任何人都可以无需KYC的情况下使用这款产品。 数据公开透明。Radiant的所有数据都是链上公开，任何人都可以方便地从链上获取radiant的营收数据。 无缝跨链。用户可以通过Radiant方便地进行资产跨链，并实现跨链抵押和借贷。 高资金利用率。通过Radiant的loop功能，可以实现杠杆（最高4倍），提高资金的年回报率。  3 Radiant的系统整体设计 系统架构图 系统各模块主要功能
+ LendingPool: 平台核心逻辑，负责核心总账目的计算。 ETHGateWay: 把ETH转为WETH，和把WETH转为ETH。 MultiFeeDistribution: 分配平台奖励和借贷手续费。 MiddleFeeDistribution: 保存平台的借贷手续费，并把费用分配给用户。 Leverager: 用户存款杠杆。 LockZap: 锁定Zap资产的核心逻辑。 ChefIncentivesController: RNDT奖励的分配计算逻辑。 StargateBorrow: 跨链借贷逻辑。  4 Radiant核心业务逻辑解读 了解了Radiant系统设计框架，那么解析来就逐个解析它的核心业务流程。
+4.1 用户存取款业务逻辑 4.1.1 用户存取款业务流程 用户存款流程
+ 用户调用LendingPool合约，发起Token存入。  如果是ETH，就先调用ETHGateway合约把ETH转成WETH。 ETHGateway合约再调用LendingPool合约执行后续流程。   LendingPool合约更新状态、存款利率和借款利率。 LendingPool合约把Token转入rToken合约。 rToken合约mint同等数量的rToken给到用户。 用户按1:1得到rToken。  用户取款流程
+ 用户调用LendingPool合约，发起Token取款。 LendingPool合约更新状态、存款利率和借款利率。 LendingPool合约调用rToken合约burn rToken。 rToken合约按照1:1把同等数量Token给到用户。 用户得到Token。  如果是ETH，就通过ETHGateway合约把ETH转成WETH。 ETHGateway合约再把WETH转给用户。    4.</description>
+    </item>
+    
     <item>
       <title>深度解读GMX：去中心化永续合约交易所</title>
       <link>https://zhongxuqi.github.io/web3/2023-02-27/</link>
@@ -19,7 +34,7 @@
       <guid>https://zhongxuqi.github.io/web3/2023-02-27/</guid>
       <description>0 GMX项目发展史 在2020年10月，xvi10启动了 xvix-contracts 项目，并部署到了Ethereum Mainnet。 在2021年3月，xvi10把 xvix-contracts 升级为 gambit-contracts ，并部署到了BSC。 在2021年9月，xvi10基于 gambit-contracts 启动GMX项目，并部署到了Arbitrum One。 在启动一周后，GMX完成了第一次升级，在eth、wbtc和usdc的基础上，添加了link、uni和usdt。 在启动三个月后，GMX，完成了第二次升级，部署到了Avalanche链上。
 1 GMX的产品设计目标 GMX的产品设计目标是打造一个去中心化的永续合约和现货交易平台。不需要任何注册、KYC和地域限制等限制，用户即可方便地用它进行链上资产交易和合约交易。
-2 GMX的核心卖点  去中心化。GMX是一个去中心化的永续合约交易平台，所有资产由智能合约保管，智能合约开源，所有运营数据也是公开透明的。 全额保证金。GMX上面的所有杠杆订单都是有全额保证金的，保障用户的收益能够钢性对付，很多中心化交易所都无法做到全额保证金。 无需许可Permissionless。所有人都可以公平得参与平台做市，并且根据GMX和GLP持有量平等地分到平台的盈利。 市场报价去中心化。系统报价主要由ChainLink和报价机器人组成，报价公开透明，有效避免了恶意插针等扰乱市场的行为。  3 GMX的系统整体设计 3.1 GMX系统架构图 其中，Vault合约是整个GMX的核心，负责管理GMX平台的全部资产。
+2 GMX的核心竞争力  去中心化。GMX是一个去中心化的永续合约交易平台，所有资产由智能合约保管，智能合约开源，所有运营数据也是公开透明的。 全额保证金。GMX上面的所有杠杆订单都是有全额保证金的，保障用户的收益能够钢性对付，很多中心化交易所都无法做到全额保证金。 无需许可Permissionless。所有人都可以公平得参与平台做市，并且根据GMX和GLP持有量平等地分到平台的盈利。 市场报价去中心化。系统报价主要由ChainLink和报价机器人组成，报价公开透明，有效避免了恶意插针等扰乱市场的行为。  3 GMX的系统整体设计 3.1 GMX系统架构图 其中，Vault合约是整个GMX的核心，负责管理GMX平台的全部资产。
 3.2 系统核心数据模型 { 	&amp;#34;id&amp;#34;: keccak256(_account, _collateralToken, _indexToken, _isLong), // 仓位ID 	&amp;#34;size&amp;#34;: uint256, // Position大小 	&amp;#34;collateral&amp;#34;: uint256, // 抵押品价格 USD 	&amp;#34;averagePrice&amp;#34;: uint256, // 平均持仓价格 USD 	&amp;#34;entryFundingRate&amp;#34;: uint256, // 入场资金费率 	&amp;#34;reserveAmount&amp;#34;: uint256, // 抵押品token储备数量 	&amp;#34;realisedPnl&amp;#34;: int256, // 已兑付盈亏 	&amp;#34;lastIncreasedTime&amp;#34;: uint256, // 最后加仓时间 } 盈亏USD价值计算：</description>
     </item>
     
